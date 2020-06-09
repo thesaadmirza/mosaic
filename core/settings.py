@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     # Local Apps
     'users',
     'administrator',
+    'services',
     # installed Libraries
     'crispy_forms',
     'allauth',

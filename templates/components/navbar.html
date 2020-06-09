@@ -40,55 +40,7 @@
             </li>
         </ul>
         <ul class="navbar-item flex-row navbar-dropdown">
-            <li class="nav-item dropdown language-dropdown more-dropdown">
-                <div class="dropdown  custom-dropdown-icon">
-                    <a class="dropdown-toggle btn" href="#" role="button" id="customDropdown" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        {% get_current_language as LANGUAGE_CODE %}
 
-                        <img src="
-
-
-                                {% if LANGUAGE_CODE == "en" %}{% static 'assets/flags/england.png' %}{% else %}{% static 'lenderer/assets/img/de.png' %}{% endif %}"
-                             class="flag-width"
-                             alt="flag">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-right animated fadeInUp" aria-labelledby="customDropdown">
-                        <a class="dropdown-item" data-img-value="ca" data-value="English"
-                           href="javascript:document.languageEn.submit()">
-                            <form name="languageEn" action="{% url 'set_language' %}"
-                                  method="post">{% csrf_token %}
-                                <input name="next" type="hidden" value="{{ redirect_to }}"/>
-                                <input name="language" type="hidden" value="en"/>
-                                <img width='16'
-                                     height='12'
-                                     src="{% static 'assets/img/en.png' %}"
-                                     alt='en'/>
-                                English
-                            </form>
-                        </a>
-                        <a class="dropdown-item" data-img-value="de" data-value="German"
-                           href="javascript:document.languageDe.submit()">
-                            <form name="languageDe" action="{% url 'set_language' %}"
-                                  method="post">{% csrf_token %}
-                                <input name="next" type="hidden" value="{{ redirect_to }}"/>
-                                <input name="language" type="hidden" value="zh"/>
-                                <img width='16'
-                                     height='12'
-                                     src="{% static 'assets/img/zh.png' %}"
-                                     alt='zh'/> Chineese
-                            </form>
-                        </a>
-
-                    </div>
-                </div>
-            </li>
 
 
             <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">

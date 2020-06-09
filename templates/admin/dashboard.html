@@ -5,15 +5,15 @@
 
 {% block page_css %}
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    <link href="{% static 'lenderer/plugins/apex/apexcharts.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'lenderer/assets/css/dashboard/dash_1.css' %}" rel="stylesheet" type="text/css"
+    <link href="{% static 'plugins/apex/apexcharts.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/dashboard/dash_1.css' %}" rel="stylesheet" type="text/css"
           class="dashboard-analytics"/>
-    <link href="{% static 'lenderer/assets/css/dashboard/dash_2.css' %}" rel="stylesheet" type="text/css"
+    <link href="{% static 'assets/css/dashboard/dash_2.css' %}" rel="stylesheet" type="text/css"
           class="dashboard-analytics"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/datatables.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/custom_dt_html5.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/datatables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/custom_dt_html5.css' %}">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/dt-global_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/dt-global_style.css' %}">
 
 {% endblock %}
 
@@ -33,7 +33,7 @@
 
                 <div class="header">
                     <div class="header-body">
-                        <h6 style="color: white;">{% trans 'Open Loans' %}</h6>
+                        <h6 style="color: white;">{% trans 'Customers' %}</h6>
                     </div>
 
                 </div>
@@ -51,7 +51,7 @@
 
                 <div class="header">
                     <div class="header-body">
-                        <h6 style="color: white;" class="text-center">{% trans 'Overdue' %}</h6>
+                        <h6 style="color: white;" class="text-center">{% trans 'Campaigns' %}</h6>
                     </div>
 
                 </div>
@@ -84,7 +84,7 @@
                         <div class="w-summary-details">
 
                             <div class="w-summary-info">
-                                <h6 class="text-uppercase">{% trans 'Investments' %}</h6>
+                                <h6 class="text-uppercase">{% trans 'Customers' %}</h6>
                                 <p class="summary-count">DKK92,600</p>
                             </div>
 
@@ -112,7 +112,7 @@
                         <div class="w-summary-details">
 
                             <div class="w-summary-info">
-                                <h6 class="text-uppercase">{% trans 'Open Loans' %}</h6>
+                                <h6 class="text-uppercase">{% trans 'Bookings' %}</h6>
                                 <p class="summary-count">DKK37,515</p>
                             </div>
 
@@ -167,15 +167,15 @@
 
 {% block page_js %}
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-    <script src="{% static 'lenderer/plugins/apex/apexcharts.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'lenderer/assets/js/dashboard/dash_1.js' %}" type="text/javascript"></script>
+    <script src="{% static 'plugins/apex/apexcharts.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/dashboard/dash_1.js' %}" type="text/javascript"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-    <script src="{% static 'lenderer/plugins/table/datatable/datatables.js' %}"></script>
+    <script src="{% static 'plugins/table/datatable/datatables.js' %}"></script>
       <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/dataTables.buttons.min.js' %}"></script>
-    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/jszip.min.js' %}"></script>
-    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/buttons.print.min.js' %}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/jszip.min.js' %}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.print.min.js' %}"></script>
     <script>
         $('#default-ordering').DataTable({
              dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
