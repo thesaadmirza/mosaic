@@ -3,8 +3,8 @@ from allauth.account.forms import SignupForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
 from django.utils.translation import ugettext_lazy as _
-
-
+from django import forms
+from users.models import User, Customer
 
 
 class MyCustomLoginForm(LoginForm):
@@ -46,3 +46,30 @@ class MyCustomSignupForm(SignupForm):
         # You must return the original result.
         return user
 
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
+
+        def clean(self):
+            cleaned_data = super(UserForm, self).clean()
+            password = cleaned_data.get("password")
+            confirm_password = cleaned_data.get("confirm_password")
+
+            if password != confirm_password:
+                raise forms.ValidationError(
+                    "password and confirm_password does not match"
+                )
+
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['company_name', 'address', 'phone']
