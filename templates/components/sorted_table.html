@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load static %}
+<div class="layout-px-spacing col-12">
+
+    <div class="row layout-top-spacing" id="cancel-row">
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="default-ordering" class="table table-hover" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Date' %}</th>
+                            <th>{% trans 'Picture' %}</th>
+                            <th>{% trans 'First Name' %}</th>
+                            <th>{% trans 'Last Name' %}</th>
+                            <th>{% trans 'Amount' %}</th>
+                            <th>{% trans 'Loan Type' %}</th>
+                            <th>{% trans 'City' %}</th>
+                            <th>{% trans 'Postal Code' %}</th>
+                            <th>{% trans 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for loan in loans %}
+                            <tr>
+                                <td>{{ loan.created_at }}</td>
+                                <td>
+                                    {% if loan.owner.socialaccount_set.all.0.get_avatar_url %}
+                                        <img class="img-fluid rounded-circle" style="height: 40px;"
+                                             src="{{ loan.owner.socialaccount_set.all.0.get_avatar_url }}"
+                                             alt="{{ loan.owner.username }}"/>
+                                    {% else %}
+                                        <img alt="avatar" class="img-fluid rounded-circle" style="height: 40px;"
+                                             src="{% static 'lenderer/assets/img/boy.png' %}">
+                                    {% endif %}
+                                </td>
+                                <td>{{ loan.profile.firstName }}</td>
+                                <td>{{ loan.profile.lastName }}</td>
+                                <td>{{ loan.amount }}</td>
+                                <td>{{ loan.get_loanType_display }}</td>
+                                <td>{{ loan.profile.city }}</td>
+                                <td>{{ loan.profile.postcode }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'loan:request' loan.id %}"
+                                       class="btn btn-primary">{% trans 'View' %}</a>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>{% trans 'Date' %}</th>
+                            <th>{% trans 'Picture' %}</th>
+                            <th>{% trans 'First Name' %}</th>
+                            <th>{% trans 'Last Name' %}</th>
+                            <th>{% trans 'Amount' %}</th>
+                            <th>{% trans 'Loan Type' %}</th>
+                            <th>{% trans 'City' %}</th>
+                            <th>{% trans 'Postal Code' %}</th>
+                            <th class="invisible"></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

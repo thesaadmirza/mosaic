@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+
+{% block page_css %}
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link href="{% static 'lenderer/plugins/apex/apexcharts.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'lenderer/assets/css/dashboard/dash_1.css' %}" rel="stylesheet" type="text/css"
+          class="dashboard-analytics"/>
+    <link href="{% static 'lenderer/assets/css/dashboard/dash_2.css' %}" rel="stylesheet" type="text/css"
+          class="dashboard-analytics"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/datatables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/custom_dt_html5.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'lenderer/plugins/table/datatable/dt-global_style.css' %}">
+
+{% endblock %}
+
+
+<!-- Important for page rendering -->
+{% block page_class %}dashboard-analytics{% endblock %}
+{% block page_title %}{% trans 'Dashboard' %}{% endblock %}
+{% block page_title_heading %}{% trans 'Dashboard' %}{% endblock %}
+<!-- ends here important tile and class -->
+
+
+<!-- Start Adding Content From Here -->
+{% block content %}
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+        <div class="widget widget-five" style="background: #1b55e2;">
+            <div class="widget-content">
+
+                <div class="header">
+                    <div class="header-body">
+                        <h6 style="color: white;">{% trans 'Open Loans' %}</h6>
+                    </div>
+
+                </div>
+                <div class="w-content">
+                    <div class="">
+                        <p class="task-left">{{ loansCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+        <div class="widget widget-five" style="background: rgb(231, 81, 90);">
+            <div class="widget-content">
+
+                <div class="header">
+                    <div class="header-body">
+                        <h6 style="color: white;" class="text-center">{% trans 'Overdue' %}</h6>
+                    </div>
+
+                </div>
+                <div class="w-content">
+                    <div class="">
+                        <p class="task-left">{{ overdueCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+        <div class="widget-three">
+
+            <div class="widget-content">
+
+                <div class="order-summary">
+
+                    <div class="summary-list">
+                        <div class="w-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-shopping-bag">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                        </div>
+                        <div class="w-summary-details">
+
+                            <div class="w-summary-info">
+                                <h6 class="text-uppercase">{% trans 'Investments' %}</h6>
+                                <p class="summary-count">DKK92,600</p>
+                            </div>
+
+                            <div class="w-summary-stats">
+                                <div class="progress">
+                                    <div class="progress-bar bg-gradient-secondary" role="progressbar"
+                                         style="width: 90%" aria-valuenow="90" aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="w-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-tag">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7" y2="7"></line>
+                            </svg>
+                        </div>
+                        <div class="w-summary-details">
+
+                            <div class="w-summary-info">
+                                <h6 class="text-uppercase">{% trans 'Open Loans' %}</h6>
+                                <p class="summary-count">DKK37,515</p>
+                            </div>
+
+                            <div class="w-summary-stats">
+                                <div class="progress">
+                                    <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 65%"
+                                         aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="w-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-credit-card">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div class="w-summary-details">
+
+                            <div class="w-summary-info">
+                                <h6 class="text-uppercase">{% trans 'Profits' %}</h6>
+                                <p class="summary-count">DKK55,085</p>
+                            </div>
+
+                            <div class="w-summary-stats">
+                                <div class="progress">
+                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 80%"
+                                         aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+<!-- Main Content -->
+
+
+
+{% block page_js %}
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="{% static 'lenderer/plugins/apex/apexcharts.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lenderer/assets/js/dashboard/dash_1.js' %}" type="text/javascript"></script>
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="{% static 'lenderer/plugins/table/datatable/datatables.js' %}"></script>
+      <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/jszip.min.js' %}"></script>
+    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'lenderer/plugins/table/datatable/button-ext/buttons.print.min.js' %}"></script>
+    <script>
+        $('#default-ordering').DataTable({
+             dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+            buttons: {
+                buttons: [
+
+                    { extend: 'csv', className: 'btn' },
+                    { extend: 'excel', className: 'btn' },
+
+                ]
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                    "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "order": [[3, "desc"]],
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50],
+            "pageLength": 7,
+            drawCallback: function () {
+                $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered mb-5');
+            }
+        });
+    </script>
+{% endblock %}

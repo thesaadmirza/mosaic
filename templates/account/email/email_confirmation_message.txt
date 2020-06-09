@@ -1,0 +1,9 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Hi {{ user_display }}!
+
+You have created a user at {{ site_name }}
+
+Click the link below and confirm that the email address you registered belongs to you.
+
+{{ activate_url }}
+{% endblocktrans %}
+{% endautoescape %}
