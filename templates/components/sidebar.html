@@ -2,6 +2,7 @@
 {% load static %}
  {% url 'administrator:index' as home_url %}
  {% url 'services:list' as services_list %}
+ {% url 'administrator:customers' as customers %}
 
 <!--  BEGIN SIDEBAR  -->
 <div class="sidebar-wrapper sidebar-theme">
@@ -51,8 +52,8 @@
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </li>
-            <li class="menu {% if request.get_full_path == borrowers %}active{% endif %}">
-                <a href="" data-active="false" class="menu-toggle">
+            <li class="menu {% if request.get_full_path == customers %}active{% endif %}">
+                <a href="{% url 'administrator:customers' %}" data-active="false" class="menu-toggle">
                     <div class="base-menu">
                         <div class="base-icons">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"

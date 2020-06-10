@@ -18,3 +18,13 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+
+class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer')
+    company_name = models.CharField(_("Company Name"), max_length=100)
+    address = models.CharField(_("Address"), max_length=200)
+    phone = models.CharField(_("Phone Number"), max_length=50)
+
+    def __str__(self):
+        return self.company_name
