@@ -24,7 +24,7 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <a href="" class="btn btn-primary ">Add</a>
+                    <a href="{% url 'administrator:addCustomer' %}" class="btn btn-primary ">Add</a>
                     <div class="table-responsive mb-4 mt-4">
                         <table id="default-ordering" class="table table-hover" style="width:100%">
                             <thead>
@@ -42,7 +42,7 @@
                                     <td>{{ customer.user.email }}</td>
                                     <td>{{ customer.phone }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'services:view' customer.id %}"
+                                        <a href="{% url 'administrator:customerview' customer.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Show">

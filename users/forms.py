@@ -70,6 +70,8 @@ class UserForm(forms.ModelForm):
 
 
 class CustomerForm(forms.ModelForm):
+    email = forms.CharField(widget=forms.EmailInput())
+
     class Meta:
         model = Customer
-        fields = ['company_name', 'address', 'phone']
+        fields = ['company_name', 'email', 'address', 'phone']
