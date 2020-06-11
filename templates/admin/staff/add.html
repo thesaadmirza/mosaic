@@ -12,8 +12,8 @@
 
 <!-- Important for page rendering -->
 {% block page_class %}sidebar-noneoverflow{% endblock %}
-{% block page_title %}{% trans 'Update Customer' %}{% endblock %}
-{% block page_title_heading %}{% trans 'Update Customer' %}{% endblock %}
+{% block page_title %}{% trans 'Add Staff' %} - {{ customer.company_name }}{% endblock %}
+{% block page_title_heading %}{% trans 'Add Staff' %} - {{ customer.company_name }}{% endblock %}
 <!-- ends here important tile and class -->
 
 
@@ -23,7 +23,7 @@
         <div class="row layout-top-spacing" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <form method="POST" action="{% url 'customer:update' object.id %}">
+                    <form method="POST" action="{% url 'staff:add' customer.id %}">
                         {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}"
                                    value="{{ redirect_field_value }}"/>

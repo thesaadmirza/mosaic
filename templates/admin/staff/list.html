@@ -12,8 +12,8 @@
 
 <!-- Important for page rendering -->
 {% block page_class %}sidebar-noneoverflow{% endblock %}
-{% block page_title %}{% trans 'Customers' %}{% endblock %}
-{% block page_title_heading %}{% trans 'Customers' %}{% endblock %}
+{% block page_title %}{% trans 'Staff List' %} - {{ customer.company_name }}{% endblock %}
+{% block page_title_heading %}{% trans 'Staff List' %} - {{ customer.company_name }}{% endblock %}
 <!-- ends here important tile and class -->
 
 
@@ -24,38 +24,25 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <a href="{% url 'customer:add' %}" class="btn btn-primary ">Add</a>
+                    <a href="{% url 'staff:add' customer.id %}" class="btn btn-primary ">Add</a>
                     <div class="table-responsive mb-4 mt-4">
                         <table id="default-ordering" class="table table-hover" style="width:100%">
                             <thead>
                             <tr>
-                                <th>{% trans 'Company Name' %}</th>
+                                <th>{% trans 'Name' %}</th>
                                 <th>{% trans 'Email' %}</th>
                                 <th>{% trans 'Phone' %}</th>
                                 <th class="text-center">{% trans 'Actions' %}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for customer in object_list %}
+                            {% for staff in object_list %}
                                 <tr>
-                                    <td>{{ customer.company_name }}</td>
-                                    <td>{{ customer.user.email }}</td>
-                                    <td>{{ customer.phone }}</td>
+                                    <td>{{ staff.name }}</td>
+                                    <td>{{ staff.user.email }}</td>
+                                    <td>{{ staff.phone }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'staff:index' customer.id %}"
-                                           class="bs-tooltip"
-                                           data-toggle="tooltip" data-placement="top" title=""
-                                           data-original-title="Staff">
-                                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
-                                                 stroke-width="2" fill="none" stroke-linecap="round"
-                                                 stroke-linejoin="round" class="css-i6dzq1">
-                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                                <circle cx="9" cy="7" r="4"></circle>
-                                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                            </svg>
-                                        </a>
-                                        <a href="{% url 'customer:view' customer.id %}"
+                                        <a href="{% url 'staff:view' customer=customer.id pk=staff.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Show">
@@ -65,7 +52,7 @@
                                                 <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
                                         </a>
-                                        <a href="{% url 'customer:update' customer.id %}"
+                                        <a href="{% url 'staff:update' customer=customer.id pk=staff.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Update">
@@ -76,7 +63,7 @@
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </a>
-                                        <a href="{% url 'customer:delete' customer.id %}"
+                                        <a href="{% url 'staff:delete' customer=customer.id pk=staff.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Delete">
@@ -95,7 +82,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th>{% trans 'Company Name' %}</th>
+                                <th>{% trans ' Name' %}</th>
                                 <th>{% trans 'Email' %}</th>
                                 <th>{% trans 'Phone' %}</th>
                                 <th class="invisible"></th>

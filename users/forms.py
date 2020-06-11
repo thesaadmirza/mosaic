@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
 from django.utils.translation import ugettext_lazy as _
 from django import forms
-from users.models import User, Customer
+from users.models import User, Customer, Staff
 
 
 class MyCustomLoginForm(LoginForm):
@@ -75,3 +75,26 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['company_name', 'email', 'address', 'phone']
+
+
+class CustomerFormE(forms.ModelForm):
+
+
+    class Meta:
+        model = Customer
+        fields = ['company_name', 'address', 'phone']
+
+
+class StaffForm(forms.ModelForm):
+    email = forms.CharField(widget=forms.EmailInput())
+
+    class Meta:
+        model = Staff
+        fields = ['name', 'email', 'phone']
+
+
+class StaffFormE(forms.ModelForm):
+
+    class Meta:
+        model = Staff
+        fields = ['name', 'phone']

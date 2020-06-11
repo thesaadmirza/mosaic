@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class User(AbstractUser):
-
     STAFF = "S"
     CUSTOMER = "C"
     USER_TYPES = (
@@ -31,4 +30,17 @@ class Customer(models.Model):
         return self.company_name
 
     def get_absolute_url(self):
-        return reverse('administrator:customerview', kwargs={'pk': self.pk})
+        return reverse('customer:view', kwargs={'pk': self.pk})
+
+
+class Staff(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="staffs")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="staff")
+    name = models.CharField(_("Full Name"), max_length=100)
+    phone = models.CharField(_("Phone Number"), max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('customer:view', kwargs={'pk': self.pk})

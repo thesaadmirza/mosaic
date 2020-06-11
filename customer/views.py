@@ -2,15 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import User, Customer
-from users.forms import UserForm, CustomerForm
+from users.forms import UserForm, CustomerForm, CustomerFormE
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.urls import reverse_lazy
+from utils.strings import get_random_alphaNumeric_string
 
-
-import random
-import string
 
 
 # Create your views here.
@@ -23,9 +21,7 @@ class CustomersListView(ListView, LoginRequiredMixin):
     template_name = 'admin/customers/list.html'
 
 
-def get_random_alphaNumeric_string(stringLength=8):
-    lettersAndDigits = string.ascii_letters + string.digits
-    return ''.join((random.choice(lettersAndDigits) for i in range(stringLength)))
+
 
 
 class CustomerCreateView(CreateView, LoginRequiredMixin):
@@ -64,7 +60,7 @@ class CustomerView(DetailView):
 
 class CustomersUpdate(UpdateView):
     model = Customer
-    form_class = CustomerForm
+    form_class = CustomerFormE
     success_url = reverse_lazy('customers:list')
     template_name = 'admin/customers/update.html'
 

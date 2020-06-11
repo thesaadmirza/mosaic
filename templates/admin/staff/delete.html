@@ -12,8 +12,8 @@
 
 <!-- Important for page rendering -->
 {% block page_class %}sidebar-noneoverflow{% endblock %}
-{% block page_title %}{{ object.company_name }}{% endblock %}
-{% block page_title_heading %}{{ object.company_name }}{% endblock %}
+{% block page_title %}{% trans 'Confirm Delete' %}{% endblock %}
+{% block page_title_heading %}{% trans 'Confirm Delete' %}{% endblock %}
 <!-- ends here important tile and class -->
 
 
@@ -23,12 +23,10 @@
         <div class="row layout-top-spacing" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <h3>Name : {{ object.company_name }}</h3>
-                    <p>Email : {{ object.user.email }}</p>
-                    <p>Phone : <b>{{ object.phone }}</b></p>
-                    <p>Addreess : <b>{{ object.address }}</b></p>
-                    <p>Staff List : <a href="{% url 'staff:index' customer.id %}"
-                                       class="btn btn-outline-primary">View</a></p>
+                    <form method="post">{% csrf_token %}
+                        <p>Are you sure you want to delete "{{ object }}"?</p>
+                        <input type="submit" class="btn btn-danger" value="Confirm">
+                    </form>
                 </div>
             </div>
 
