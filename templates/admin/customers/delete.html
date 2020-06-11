@@ -12,8 +12,8 @@
 
 <!-- Important for page rendering -->
 {% block page_class %}sidebar-noneoverflow{% endblock %}
-{% block page_title %}{% trans 'Add Customer' %}{% endblock %}
-{% block page_title_heading %}{% trans 'Add Customers' %}{% endblock %}
+{% block page_title %}{% trans 'Confirm Delete' %}{% endblock %}
+{% block page_title_heading %}{% trans 'Confirm Delete' %}{% endblock %}
 <!-- ends here important tile and class -->
 
 
@@ -23,16 +23,9 @@
         <div class="row layout-top-spacing" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <form method="POST" action="{% url 'customer:add' %}">
-                        {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}"
-                                   value="{{ redirect_field_value }}"/>
-                        {% endif %}
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="form-group">
-                            <input type="submit" class="btn btn-success" value="{% trans 'Save' %}">
-                        </div>
+                    <form method="post">{% csrf_token %}
+                        <p>Are you sure you want to delete "{{ object }}"?</p>
+                        <input type="submit" class="btn btn-danger" value="Confirm">
                     </form>
                 </div>
             </div>

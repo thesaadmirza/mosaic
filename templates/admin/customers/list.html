@@ -24,7 +24,7 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <a href="{% url 'administrator:addCustomer' %}" class="btn btn-primary ">Add</a>
+                    <a href="{% url 'customer:add' %}" class="btn btn-primary ">Add</a>
                     <div class="table-responsive mb-4 mt-4">
                         <table id="default-ordering" class="table table-hover" style="width:100%">
                             <thead>
@@ -42,7 +42,7 @@
                                     <td>{{ customer.user.email }}</td>
                                     <td>{{ customer.phone }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'administrator:customerview' customer.id %}"
+                                        <a href="{% url 'customer:view' customer.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Show">
@@ -52,7 +52,7 @@
                                                 <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
                                         </a>
-                                        <a href="{% url 'services:update' customer.id %}"
+                                        <a href="{% url 'customer:update' customer.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Update">
@@ -63,7 +63,7 @@
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </a>
-                                        <a href="{% url 'services:delete' customer.id %}"
+                                        <a href="{% url 'customer:delete' customer.id %}"
                                            class="bs-tooltip"
                                            data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="Delete">
