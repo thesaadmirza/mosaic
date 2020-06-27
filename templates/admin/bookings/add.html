@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+
+
+{% block page_css %}
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="{% static 'plugins/flatpickr/flatpickr.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- END THEME GLOBAL STYLES -->
+
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+
+    <link href="{% static 'plugins/flatpickr/custom-flatpickr.css' %}" rel="stylesheet" type="text/css">
+
+    <!--  END CUSTOM STYLE FILE  -->
+{% endblock %}
+
+
+<!-- Important for page rendering -->
+{% block page_class %}sidebar-noneoverflow{% endblock %}
+{% block page_title %}{% trans 'Add Booking' %}{% endblock %}
+{% block page_title_heading %}{% trans 'Add Booking' %}{% endblock %}
+<!-- ends here important tile and class -->
+
+
+<!-- Start Adding Content From Here -->
+{% block content %}
+    <div class="layout-px-spacing col-12">
+        <div class="row layout-top-spacing" id="cancel-row">
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <form method="POST" action="{% url 'booking:add' %}">
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}"
+                                   value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-success" value="{% trans 'Save' %}">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+<!-- Main Content -->
+
+
+
+{% block page_js %}
+
+    <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
+
+
+    <script src="{% static 'plugins/flatpickr/custom-flatpickr.js' %}"></script>
+    <script>
+        var f2 = flatpickr(document.getElementById('id_start_time'), {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+        });
+        var f2 = flatpickr(document.getElementById('id_end_time'), {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+        });
+    </script>
+
+{% endblock %}

@@ -68,7 +68,6 @@ SOCIALACCOUNT_ADAPTER = "users.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "mosaicmedia.com"
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,6 +84,7 @@ INSTALLED_APPS = [
     'services',
     'customer',
     'staff',
+    'booking',
     # installed Libraries
     'crispy_forms',
     'allauth',
@@ -162,7 +162,6 @@ AUTHENTICATION_BACKENDS = (
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend"
 )
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
