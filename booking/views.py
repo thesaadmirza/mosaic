@@ -4,6 +4,13 @@ from booking.models import Booking
 from services.forms import ServiceForm
 from booking.forms import BookingForm
 from django.urls import reverse_lazy
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def calendar(request):
+    return render(request, 'admin/bookings/calendar.html', {})
 
 
 # Create your views here.
