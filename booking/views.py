@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from booking.models import Booking
-from services.forms import ServiceForm
+from services.models import Service
 from booking.forms import BookingForm, AddressForm
 from django.urls import reverse_lazy
 from django.shortcuts import render
@@ -28,6 +28,7 @@ class BookingCreateView(CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
+        context['services'] = Service.objects.all()
         return context
 
 

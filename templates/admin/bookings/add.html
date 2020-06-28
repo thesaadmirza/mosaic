@@ -18,6 +18,7 @@
     <!--  END CUSTOM STYLE FILE  -->
     <link href="{% static 'assets/css/components/custom-modal.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'plugins/jquery-step/jquery.steps.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/select2/select2.min.css' %}">
     <style>
         #formValidate .wizard > .content {
             min-height: 25em;
@@ -25,6 +26,11 @@
 
         #example-vertical.wizard > .content {
             min-height: 24.5em;
+        }
+
+        table thead .row, table tbody .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
         }
     </style>
 {% endblock %}
@@ -80,7 +86,44 @@
                             <section>
 
                                 {{ form.service.errors }}
-                                {{ form.service|as_crispy_field }}
+                                <div class="form-group">
+                                    <label for="id_services">Services</label>
+                                    <select name="services" multiple="multiple" required id="id_services"
+                                            class="form-control tagging ">
+                                        {% for service in services %}
+                                            <option value="{{ service.id }}"
+                                                    data-price="{{ service.price }}"
+                                                    data-description="{{ service.description }}"
+                                                    data-name="{{ service.name }}">{{ service.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <table class="table table-bordered" style="margin-bottom: 0;">
+                                    <thead>
+                                    <tr class="text-center row">
+                                        <th class="col-sm-2">No</th>
+                                        <th class="col-sm-3">Service Name</th>
+                                        <th class="col-sm-5">Service Description</th>
+                                        <th class="col-sm-2">Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="servicewrapper">
+
+                                    </tbody>
+                                </table>
+                                <br>
+                                <table class="table table-bordered">
+
+                                    <tr>
+                                        <td colspan="2">Total $ <small>Inc GST</small></td>
+                                        <td id="total">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Total $ In Words</td>
+                                        <td id="wordstotal">Zero</td>
+                                    </tr>
+                                </table>
+
 
                             </section>
                             <h3>Preferences</h3>
@@ -143,6 +186,8 @@
     <script src="{% static 'plugins/flatpickr/custom-flatpickr.js' %}"></script>
     <script src="{% static 'plugins/jquery-step/jquery.steps.min.js' %}"></script>
     <script src="{% static 'plugins/jquery-step/custom-jquery.steps.js' %}"></script>
+    <script src="{% static 'plugins/select2/select2.min.js' %}"></script>
+
     <script>
         var f2 = flatpickr(document.getElementById('id_start_time'), {
             enableTime: true,
@@ -152,6 +197,77 @@
             enableTime: true,
             dateFormat: "Y-m-d H:i",
         });
+    </script>
+    <script>
+        $("#id_services").select2({
+            tags: true
+        });
+        var serviceWrapper = $('#servicewrapper');
+
+        $('#id_services').on('select2:select', function (e) {
+            var check = e.params.data.id;
+
+            let elemnt = $('#id_services option[value="' + check + '"]').data();
+
+            $(serviceWrapper).append('<tr id="' + check + '" class="counter row"><td class="col-2"></td><td class="col-3" id="type">' + elemnt.name + '</td><td class="col-5">' + elemnt.description + '</td><td class="col-2" id="rswala">' + elemnt.price + '</td></tr>'); //add
+
+            var table = document.getElementsByTagName('tbody')[0],
+                rows = table.getElementsByTagName('tr'),
+                text = 'textContent' in document ? 'textContent' : 'innerText';
+
+            for (var i = 0, len = rows.length; i < len; i++) {
+                rows[i].children[0][text] = i + 1;
+            }
+            val = parseInt(elemnt.price) + parseInt($('#total').html());
+            word = inWords(val);
+            $('#total').html(val);
+            $('#dbtotal').val(val);
+            word = capitalize_Words(word);
+            $('#wordstotal').html(word);
+
+
+        });
+        $('#id_services').on('select2:unselect', function (e) {
+            var check = e.params.data.id;
+            let elemnt = $('#id_services option[value="' + check + '"]').data();
+
+            $('#' + check).remove();
+            val = parseInt($('#total').html()) - parseInt(elemnt.price)
+            ord = inWords(val);
+            $('#total').html(val);
+            $('#dbtotal').val(val);
+            word = capitalize_Words(word);
+            $('#wordstotal').html(word);
+            var table = document.getElementsByTagName('tbody')[0],
+                rows = table.getElementsByTagName('tr'),
+                text = 'textContent' in document ? 'textContent' : 'innerText';
+            for (var i = 0, len = rows.length; i < len; i++) {
+                rows[i].children[0][text] = i + 1;
+            }
+
+        });
+
+        function capitalize_Words(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
+
+        var a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+        var b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+        function inWords(num) {
+            if ((num = num.toString()).length > 9) return 'overflow';
+            n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            if (!n) return;
+            var str = '';
+            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+            return str;
+        }
     </script>
 
     <script>
@@ -281,8 +397,8 @@
                     document.getElementById('id_details').value = val;
                 }
                 if (addressType == "locality") {
-                   // var val = place.address_components[i][componentForm['id_city']];
-                   // document.getElementById('id_city').value = val;
+                    // var val = place.address_components[i][componentForm['id_city']];
+                    // document.getElementById('id_city').value = val;
                 }
                 if (addressType == "administrative_area_level_1") {
                     var val = place.address_components[i][componentForm['id_state']];
