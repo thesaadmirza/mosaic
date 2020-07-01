@@ -9,6 +9,7 @@ class Service(models.Model):
     description = models.CharField(_("Description"), max_length=250)
     price = models.FloatField(_("Price"))
     time = models.IntegerField(_("Minutes"))
+    add_on = models.BooleanField(_("Add On"), default=False)
 
     def __str__(self):
         return self.name

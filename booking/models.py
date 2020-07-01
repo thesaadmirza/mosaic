@@ -41,7 +41,7 @@ class Booking(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="bookings")
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="bookings")
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name="bookings")
-    access_arrangments = models.CharField(_("Access Arrangements"), max_length=10, choices=ARRANGEMENTS_CHOICES)
+    # access_arrangments = models.CharField(_("Access Arrangements"), max_length=10, choices=ARRANGEMENTS_CHOICES)
     key_no = models.CharField(_("Key Number"), max_length=100, blank=True, null=True)
     job_reference = models.CharField(_("Client Job reference"), max_length=100, blank=True, null=True)
     notes = models.TextField(_("Notes"), blank=True, null=True)

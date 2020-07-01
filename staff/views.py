@@ -1,14 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views.generic import ListView, DetailView, FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import Staff, Customer, User
 from utils.strings import get_random_alphaNumeric_string
 from users.forms import StaffForm, StaffFormE
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms.utils import ErrorList
+
+import json
 
 
 # Create your views here.
@@ -90,3 +93,14 @@ class StaffDelete(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('staff:index', kwargs={'customer': self.kwargs.get('customer')})
+
+
+def get_staff(request, customer):
+    if customer and request.is_ajax():
+        pk = customer
+        staff = Staff.objects.filter(customer__id=pk).values('id', 'name')
+        data = list(staff)
+
+        return HttpResponse(json.dumps({'staff': data}), content_type="application/json")
+    else:
+        return HttpResponse(json.dumps({'error': 'unable to find any Staff'}), content_type="application/json")

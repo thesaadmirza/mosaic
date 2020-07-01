@@ -28,7 +28,8 @@ class BookingCreateView(CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
-        context['services'] = Service.objects.all()
+        context['services'] = Service.objects.filter(add_on=False)
+        context['add_ons'] = Service.objects.filter(add_on=True)
         return context
 
 

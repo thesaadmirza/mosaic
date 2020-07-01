@@ -13,7 +13,7 @@ class BookingForm(ModelForm):
 
     class Meta:
         model = Booking
-        fields = ['start_time', 'end_time', 'address', 'customer', 'service', 'staff', 'access_arrangments', 'key_no',
+        fields = ['start_time', 'end_time', 'address', 'customer', 'service', 'staff', 'key_no',
                   'job_reference', 'notes', 'private_notes']
 
     def __init__(self, *args, **kwargs):

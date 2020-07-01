@@ -24,12 +24,13 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                <a href="{% url 'services:add' %}" class="btn btn-primary " >Add</a>
+                    <a href="{% url 'services:add' %}" class="btn btn-primary ">Add</a>
                     <div class="table-responsive mb-4 mt-4">
                         <table id="default-ordering" class="table table-hover" style="width:100%">
                             <thead>
                             <tr>
                                 <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'Type' %}</th>
                                 <th>{% trans 'Price' %}</th>
                                 <th>{% trans 'Time' %}</th>
                                 <th class="text-center">{% trans 'Actions' %}</th>
@@ -39,6 +40,8 @@
                             {% for service in object_list %}
                                 <tr>
                                     <td>{{ service.name }}</td>
+                                    <td>{% if service.add_on %}<span class="badge badge-success">Add On</span>{% else %}
+                                        <span class="badge badge-info">Service</span>{% endif %}</td>
                                     <td>{{ service.price }}</td>
                                     <td>{{ service.time }}</td>
                                     <td class="text-center">
