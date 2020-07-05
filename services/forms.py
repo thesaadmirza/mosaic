@@ -9,7 +9,7 @@ from crispy_forms.layout import Submit, Layout, Field
 class ServiceForm(ModelForm):
     class Meta:
         model = Service
-        fields = ['name', 'description', 'price', 'time', 'add_on']
+        fields = ['type', 'name', 'description', 'price', 'time', 'add_on']
 
     def __init__(self, *args, **kwargs):
         super(ServiceForm, self).__init__(*args, **kwargs)

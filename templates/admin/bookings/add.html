@@ -87,6 +87,16 @@
 
                                 {{ form.service.errors }}
                                 <div class="form-group">
+                                    <label for="id_service_types">Services</label>
+                                    <select name="service_type" required id="id_service_types"
+                                            class="form-control tagging ">
+                                        <option selected disabled>Select One Service Type</option>
+                                        {% for type in service_types %}
+                                            <option value="{{ type.id }}">{{ type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="id_services">Services</label>
                                     <select name="services" required id="id_services"
                                             class="form-control tagging ">
@@ -305,10 +315,30 @@
             $.ajax({
                 url: request_url,
                 success: function (data) {
-                    
+
                     $('#id_staff').html('<option selected="' + "selected" + '">' + '' + '</option>');
                     $.each(data.staff, function (index, value) {
                         $('#id_staff').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+
+                },
+                errors: function (e) {
+                    alert(e);
+                }
+            })
+        });
+        $('#id_service_types').change(function () {
+            $('#servicewrapper').empty();
+            $('#total').html(0);
+            let pk = $(this).val();
+            request_url = '/services/' + pk + '/ajax/getServices';
+            $.ajax({
+                url: request_url,
+                success: function (data) {
+
+                    $('#id_services').html('<option selected="' + "selected" + '">' + '' + '</option>');
+                    $.each(data.service, function (index, value) {
+                        $('#id_services').append('<option value="' + value.id + '"  data-price="' + value.price + '" data-description="' + value.description + '" data-name="' + value.name + '" >' + value.name + '</option>');
                     });
 
                 },

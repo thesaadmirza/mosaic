@@ -10,4 +10,7 @@ urlpatterns = [
     path('edit/<int:pk>/', views.ServicesUpdate.as_view(), name='update'),
     path('<int:pk>/', views.ServiceView.as_view(), name='view'),
     path('<int:pk>/delete/', views.ServiceDelete.as_view(), name='delete'),
+
+    # ajax requests
+    path('<int:type>/ajax/getServices', views.get_service, name='services_list_from_type'),
 ]

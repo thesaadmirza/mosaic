@@ -3,8 +3,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
 
+class ServiceType(models.Model):
+    name = models.CharField(_("Name"), max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 # Create your models here.
 class Service(models.Model):
+    type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, related_name='services')
     name = models.CharField(_("Name"), max_length=100)
     description = models.CharField(_("Description"), max_length=250)
     price = models.FloatField(_("Price"))
