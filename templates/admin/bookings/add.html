@@ -55,7 +55,7 @@
 
 <!-- Start Adding Content From Here -->
 {% block content %}
-    <form method="POST" id="booking_form" action="{% url 'booking:store' %}">
+    <form method="POST" id="booking_form" class="col-12" action="{% url 'booking:store' %}">
         <div class="layout-px-spacing col-12">
 
             <div class="row layout-top-spacing" id="cancel-row">
@@ -124,6 +124,7 @@
                                             <option value="{{ service.id }}"
                                                     data-price="{{ service.price }}"
                                                     data-description="{{ service.description }}"
+                                                    data-time="{{ service.time }}"
                                                     data-name="{{ service.name }}">{{ service.name }}</option>
                                         {% endfor %}
                                     </select>
@@ -257,9 +258,18 @@
             },
             onStepChanged: function (event, currentIndex, newIndex) {
                 if (currentIndex == 2) {
-
+                    var totalminutes = 0;
                     var selectDuration = $('#id_services :selected').data().time;
-                    if (!selectDuration) {
+                    totalminutes = totalminutes + selectDuration;
+                    var add_on_duration = $('#id_add_services :selected');
+                    if (add_on_duration) {
+                        add_on_duration.each(function (index) {
+                            console.log($(this).data().time, 'time up')
+                            totalminutes = totalminutes + $(this).data().time;
+                        });
+                    }
+                    console.log(add_on_duration);
+                    if (!selectDuration && !totalminutes) {
                         alert("Please Choose Service From Previous Menu First. So System can find Suitable Time Slot According to Given Service.");
                         return false;
                     }
@@ -269,8 +279,9 @@
                         selectable: true,
                         themeSystem: 'bootstrap4',
                         initialView: 'timeGridWeek',
-                        slotDuration: '00:' + selectDuration + ':00',
+                        slotDuration: '00:15:00',
                         slotLabelInterval: selectDuration,
+                        defaultTimedEventDuration: '00:' + selectDuration + ':00',
                         eventLimit: 1,
                         headerToolbar: {
                             left: 'prev,next today',
@@ -299,10 +310,12 @@
                                 alert("Sorry, you are only allowed to choose 1 Slot.");
                                 return false;
                             }
+                            console.log(totalminutes);
+                            let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
-                                end: info.endStr,
+                                end: end,
                             });
                             $('#start_time').val(info.startStr);
                             $('#end_time').val(info.endStr)
