@@ -97,7 +97,7 @@
 
                                 {{ form.service.errors }}
                                 <div class="form-group">
-                                    <label for="id_service_types">Services</label>
+                                    <label for="id_service_types">Categories</label>
                                     <select name="service_type" required id="id_service_types"
                                             class="form-control tagging ">
                                         <option selected disabled>Select One Service Type</option>
@@ -113,6 +113,7 @@
                                         <option selected disabled>Select One Service</option>
                                         {% for service in services %}
                                             <option value="{{ service.id }}"
+                                                    data-time="{{ service.time }}"
                                                     data-price="{{ service.price }}"
                                                     data-description="{{ service.description }}"
                                                     data-name="{{ service.name }}">{{ service.name }}</option>
@@ -161,10 +162,14 @@
                             </section>
                             <h3>Time</h3>
                             <section>
+                                <input type="hidden" name="start_time" id="start_time">
+                                <input type="hidden" name="end_time" id="end_time">
                                 <div class="statbox widget box box-shadow">
                                     <div class="widget-content widget-content-area">
 
                                         <div id="addCalendarBooking"></div>
+                                        <small class="
+                                         badge-warning">Grey Zone Is Disable Zone.</small>
                                     </div>
                                 </div>
                             </section>
@@ -252,20 +257,27 @@
             cssClass: 'pill wizard',
             onStepChanged: function (event, currentIndex, newIndex) {
                 if (currentIndex == 2) {
+
+                    var selectDuration = $('#id_services :selected').data().time;
+                    if (!selectDuration) {
+                        alert("Please Choose Service From Previous Menu First. So System can find Suitable Time Slot According to Given Service.");
+                        return false;
+                    }
                     var calendarEl = document.getElementById('addCalendarBooking');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         timeZone: 'UTC',
                         selectable: true,
                         themeSystem: 'bootstrap4',
                         initialView: 'timeGridWeek',
+                        slotDuration: '00:' + selectDuration + ':00',
+                        slotLabelInterval: selectDuration,
+
                         headerToolbar: {
                             left: 'prev,next today',
                             center: 'title',
                             right: 'timeGridWeek,timeGridDay'
                         },
-                        selectAllow: function (selectInfo) {
 
-                        },
                         selectOverlap: function (event) {  // this function will be used for overlap see wiki https://fullcalendar.io/docs/selectOverlap
                             return event.rendering === 'background';
                         },
@@ -281,11 +293,9 @@
                                 endTime: '16:00' // 4pm
                             }
                         ],
-                        events: 'https://fullcalendar.io/demo-events.json',
-                        dateClick: function (info) {
-                            alert('clicked ' + info.dateStr);
-                        },
+                        selectConstraint: "businessHours",
                         select: function (info) {
+                            console.log($('#id_services :selected').data());
                             alert('selected ' + info.startStr + ' to ' + info.endStr);
                         }
                     });
@@ -419,7 +429,7 @@
 
                     $('#id_services').html('<option selected="' + "selected" + '">' + '' + '</option>');
                     $.each(data.service, function (index, value) {
-                        $('#id_services').append('<option value="' + value.id + '"  data-price="' + value.price + '" data-description="' + value.description + '" data-name="' + value.name + '" >' + value.name + '</option>');
+                        $('#id_services').append('<option value="' + value.id + '"  data-price="' + value.price + '" data-description="' + value.description + '"data-time="' + value.time + '" data-name="' + value.name + '" >' + value.name + '</option>');
                     });
 
                 },
