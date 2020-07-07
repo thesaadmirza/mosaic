@@ -29,6 +29,7 @@
                         <table id="default-ordering" class="table table-hover" style="width:100%">
                             <thead>
                             <tr>
+                                <th>{% trans 'Booking ID' %}</th>
                                 <th>{% trans 'Address' %}</th>
                                 <th>{% trans 'Customer' %}</th>
                                 <th>{% trans 'Date Time' %}</th>
@@ -38,6 +39,7 @@
                             <tbody>
                             {% for booking in object_list %}
                                 <tr>
+                                    <td>{{ booking.pk }}</td>
                                     <td>{{ booking.address.street_name }}</td>
                                     <td>{{ booking.customer.company_name }}</td>
                                     <td>{{ booking.start_time }} - {{ booking.end_time }}</td>

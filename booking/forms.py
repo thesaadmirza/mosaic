@@ -7,10 +7,6 @@ from crispy_forms.layout import Submit, Layout, Field
 
 
 class BookingForm(ModelForm):
-    address = forms.CharField(
-        widget=forms.TextInput(
-            attrs={'placeholder': 'Enter Street Address', 'onFocus': 'geolocate()'}))
-
     class Meta:
         model = Booking
         fields = ['start_time', 'end_time', 'address', 'customer', 'service', 'staff', 'key_no',

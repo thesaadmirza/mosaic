@@ -17,7 +17,7 @@ class Address(models.Model):
     country = models.CharField(_("Country"), max_length=50)
 
     def __str__(self):
-        return self.street_name
+        return str(self.pk)
 
 
 # Create your models here.
@@ -37,10 +37,10 @@ class Booking(models.Model):
     )
     start_time = models.DateTimeField(_("Start Time"))
     end_time = models.DateTimeField(_("End Time"))
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="bookings")
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="bookings")
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="bookings")
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name="bookings")
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="bookings_customer")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="bookings_address")
+    service = models.ManyToManyField(Service, related_name="bookings", blank=True, null=True)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name="bookings_services", blank=True, null=True)
     # access_arrangments = models.CharField(_("Access Arrangements"), max_length=10, choices=ARRANGEMENTS_CHOICES)
     key_no = models.CharField(_("Key Number"), max_length=100, blank=True, null=True)
     job_reference = models.CharField(_("Client Job reference"), max_length=100, blank=True, null=True)
@@ -48,7 +48,7 @@ class Booking(models.Model):
     private_notes = models.TextField(_("Private Notes"), null=True, blank=True)
 
     def __str__(self):
-        return self.start_time + '- ' + self.end_time
+        return str(self.pk)
 
     def get_absolute_url(self):
         return reverse('booking:view', kwargs={'pk': self.pk})

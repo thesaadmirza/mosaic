@@ -11,5 +11,5 @@ urlpatterns = [
     path('edit/<int:pk>/', views.BookingsUpdate.as_view(), name='update'),
     path('<int:pk>/', views.BookingView.as_view(), name='view'),
     path('<int:pk>/delete/', views.BookingDelete.as_view(), name='delete'),
-    path('store/', views.return_data, name="store"),
+    path('store/', views.store_booking, name="store"),
 ]
