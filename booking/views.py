@@ -4,8 +4,9 @@ from booking.models import Booking
 from services.models import Service, ServiceType
 from booking.forms import BookingForm, AddressForm
 from django.urls import reverse_lazy
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
+import json
 
 
 @login_required
@@ -50,3 +51,7 @@ class BookingDelete(DeleteView):
 class BookingView(DetailView):
     model = Booking
     template_name = 'admin/bookings/view.html'
+
+
+def return_data(request):
+    return HttpResponse('entered data:' + json.dumps(request.POST))

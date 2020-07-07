@@ -59,7 +59,7 @@
         <div class="row layout-top-spacing" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <form method="POST" action="{% url 'booking:add' %}">
+                    <form method="POST" id="booking_form" action="{% url 'booking:store' %}">
                         {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}"
                                    value="{{ redirect_field_value }}"/>
@@ -249,6 +249,9 @@
             transitionEffect: "slideLeft",
             autoFocus: true,
             cssClass: 'pill wizard',
+            onFinished: function (event, currentIndex) {
+                $("#booking_form").submit();
+            },
             onStepChanged: function (event, currentIndex, newIndex) {
                 if (currentIndex == 2) {
 
@@ -558,7 +561,7 @@
         function fillInAddress() {
             // Get the place details from the autocomplete object.
             var place = autocomplete.getPlace();
-          
+
             $('#exampleModal').modal('show');
 
             for (var component in componentForm) {
