@@ -106,18 +106,12 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group id_services_div">
                                     <label for="id_services">Services</label>
                                     <select name="services" required id="id_services"
                                             class="form-control tagging ">
                                         <option selected disabled>Select One Service</option>
-                                        {% for service in services %}
-                                            <option value="{{ service.id }}"
-                                                    data-time="{{ service.time }}"
-                                                    data-price="{{ service.price }}"
-                                                    data-description="{{ service.description }}"
-                                                    data-name="{{ service.name }}">{{ service.name }}</option>
-                                        {% endfor %}
+
                                     </select>
                                 </div>
                                 <div class="form-group add_on_div">
@@ -271,7 +265,7 @@
                         initialView: 'timeGridWeek',
                         slotDuration: '00:' + selectDuration + ':00',
                         slotLabelInterval: selectDuration,
-
+                        eventLimit: 1,
                         headerToolbar: {
                             left: 'prev,next today',
                             center: 'title',
@@ -295,8 +289,18 @@
                         ],
                         selectConstraint: "businessHours",
                         select: function (info) {
-                            console.log($('#id_services :selected').data());
-                            alert('selected ' + info.startStr + ' to ' + info.endStr);
+                            if (calendar.getEvents().length >= 1) {
+                                alert("Sorry, you are only allowed to choose 1 Slot.");
+                                return false;
+                            }
+                            calendar.addEvent({
+                                title: $('#id_services :selected').data().name,
+                                start: info.startStr,
+                                end: info.endStr,
+                            });
+                            $('#start_time').val(info.startStr);
+                            $('#end_time').val(info.endStr)
+
                         }
                     });
                     calendar.render();
@@ -312,6 +316,7 @@
     <!--  END CUSTOM SCRIPTS FILE  -->
     <script>
         $(".add_on_div").hide();
+        $(".id_services_div").hide();
         $("#id_services").select2({});
         $('#id_staff').empty();
         $("#id_add_services").select2({
@@ -408,6 +413,9 @@
                 success: function (data) {
 
                     $('#id_staff').html('<option selected="' + "selected" + '">' + '' + '</option>');
+                    if (!data.staff.length) {
+                        alert('Unable to Find any Staff Related to this Customer');
+                    }
                     $.each(data.staff, function (index, value) {
                         $('#id_staff').append('<option value="' + value.id + '">' + value.name + '</option>');
                     });
@@ -428,9 +436,13 @@
                 success: function (data) {
 
                     $('#id_services').html('<option selected="' + "selected" + '">' + '' + '</option>');
+                    if (!data.service.length) {
+                        alert('Unable to Find any Service Related to this Category');
+                    }
                     $.each(data.service, function (index, value) {
                         $('#id_services').append('<option value="' + value.id + '"  data-price="' + value.price + '" data-description="' + value.description + '"data-time="' + value.time + '" data-name="' + value.name + '" >' + value.name + '</option>');
                     });
+                    $('.id_services_div').show();
 
                 },
                 errors: function (e) {
@@ -546,6 +558,7 @@
         function fillInAddress() {
             // Get the place details from the autocomplete object.
             var place = autocomplete.getPlace();
+          
             $('#exampleModal').modal('show');
 
             for (var component in componentForm) {
