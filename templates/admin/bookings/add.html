@@ -257,6 +257,28 @@
                 $("#booking_form").submit();
             },
             onStepChanged: function (event, currentIndex, newIndex) {
+                if (currentIndex == 1) {
+                    if (!$('#id_address').val()) {
+                        alert('Please Enter Valid Address First');
+                        $(this).steps("previous");
+                        return;
+                    }
+                    if (!$('#id_street_name').val()) {
+                        alert('Please Enter Street Name in Dialogue Box First');
+                        $(this).steps("previous");
+                        $('#exampleModal').modal('show');
+                        return;
+
+                    }
+                    if (!$('#id_postcode').val()) {
+                        alert('Please Enter Post Code in Dialogue Box First');
+                        $(this).steps("previous");
+
+                        $('#exampleModal').modal('show');
+                        return;
+
+                    }
+                }
                 if (currentIndex == 2) {
                     var totalminutes = 0;
                     var selectDuration = $('#id_services :selected').data().time;
@@ -271,6 +293,9 @@
                     console.log(add_on_duration);
                     if (!selectDuration && !totalminutes) {
                         alert("Please Choose Service From Previous Menu First. So System can find Suitable Time Slot According to Given Service.");
+                        $(this).steps("previous");
+                        return;
+
                         return false;
                     }
                     var calendarEl = document.getElementById('addCalendarBooking');
@@ -307,6 +332,7 @@
                         selectConstraint: "businessHours",
                         select: function (info) {
                             if (calendar.getEvents().length >= 1) {
+
                                 alert("Sorry, you are only allowed to choose 1 Slot.");
                                 return false;
                             }
