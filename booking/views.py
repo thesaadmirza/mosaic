@@ -15,7 +15,8 @@ from django.shortcuts import redirect
 
 @login_required
 def calendar(request):
-    return render(request, 'admin/bookings/calendar.html', {})
+    events = Booking.objects.all()
+    return render(request, 'admin/bookings/calendar.html', {'events': events})
 
 
 # Create your views here.

@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:pk>/', views.BookingView.as_view(), name='view'),
     path('<int:pk>/delete/', views.BookingDelete.as_view(), name='delete'),
     path('store/', views.store_booking, name="store"),
+    path('get_events_json/', views.booking_events_json, name="get_events_json"),
 ]

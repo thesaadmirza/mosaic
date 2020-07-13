@@ -206,7 +206,21 @@
     <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
     <script src="{% static 'plugins/fullcalendar/fullcalendar.min.js' %}"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
+    <script type="text/javascript">
+        var django_events = [
+            {% for booking in events %}
+                {
+                    id: {{ booking.id }},
+                    title: "{{ booking.address.details }}",
+                    start: "{{ booking.start_time.isoformat  }}",
+                    end: "{{ booking.end_time.isoformat  }}",
+                    className: "bg-danger",
+                    description: 'Customer : {{ booking.customer.company_name }}. Staff : {{ booking.staff.name }}'
+                },
+            {% endfor %}
 
+        ];
+    </script>
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <script src="{% static 'plugins/fullcalendar/custom-fullcalendar.advance.js' %}"></script>
     <!--  END CUSTOM SCRIPTS FILE  -->
