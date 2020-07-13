@@ -24,6 +24,9 @@ class BookingListView(ListView, LoginRequiredMixin):
     queryset = Booking.objects.all()
     template_name = 'admin/bookings/list.html'
 
+    def get_queryset(self):
+        return Booking.objects.reverse().all()
+
 
 class BookingCreateView(CreateView, FormView):
     model = Booking
@@ -57,10 +60,22 @@ class BookingView(DetailView):
     template_name = 'admin/bookings/view.html'
 
 
+def booking_events_json(request):
+    bookings = Booking.objects.values('name', 'start_time', 'end_time')
+    data = list(bookings)
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+
 def store_booking(request):
     address = AddressForm(request.POST)
     addr = None
     if (address.is_valid()):
+        customer = Customer.objects.get(id=request.POST['customer'])
+        addr = Address.objects.create(street_name=request.POST['street_name'], country=request.POST['country'],
+                                      suburb=request.POST['suburb'], lat=request.POST['lat'], long=request.POST['long'],
+                                      customer=customer, details=request.POST['details'], state=request.POST['state'],
+                                      postcode=request.POST['postcode'])
+    else:
         customer = Customer.objects.get(id=request.POST['customer'])
         addr = Address.objects.create(street_name=request.POST['street_name'], country=request.POST['country'],
                                       suburb=request.POST['suburb'], lat=request.POST['lat'], long=request.POST['long'],

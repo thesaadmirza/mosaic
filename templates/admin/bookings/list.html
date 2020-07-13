@@ -40,7 +40,7 @@
                             {% for booking in object_list %}
                                 <tr>
                                     <td>{{ booking.pk }}</td>
-                                    <td>{{ booking.address.street_name }}</td>
+                                    <td>{{ booking.address.details }}</td>
                                     <td>{{ booking.customer.company_name }}</td>
                                     <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
                                     <td class="text-center">

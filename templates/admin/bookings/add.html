@@ -99,25 +99,25 @@
 
                                 {{ form.service.errors }}
                                 <div class="form-group">
-                                    <label for="id_service_types">Categories</label>
+                                    <label for="id_service_types">What service would you like to order?</label>
                                     <select name="service_type" required id="id_service_types"
                                             class="form-control tagging ">
-                                        <option selected disabled>Select One Service Type</option>
+                                        <option selected disabled>Select one Option</option>
                                         {% for type in service_types %}
                                             <option value="{{ type.id }}">{{ type.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group id_services_div">
-                                    <label for="id_services">Services</label>
+                                    <label for="id_services">Please Select a Service</label>
                                     <select name="services" required id="id_services"
                                             class="form-control tagging ">
-                                        <option selected disabled>Select One Service</option>
+                                        <option selected disabled>Select One Option</option>
 
                                     </select>
                                 </div>
                                 <div class="form-group add_on_div">
-                                    <label for="id_services">Add On Services</label>
+                                    <label for="id_services">Would you like to add on any other service?</label>
                                     <select name="add_on" multiple="multiple" id="id_add_services"
                                             class="form-control tagging ">
                                         {% for service in add_ons %}
@@ -263,21 +263,7 @@
                         $(this).steps("previous");
                         return;
                     }
-                    if (!$('#id_street_name').val()) {
-                        alert('Please Enter Street Name in Dialogue Box First');
-                        $(this).steps("previous");
-                        $('#exampleModal').modal('show');
-                        return;
 
-                    }
-                    if (!$('#id_postcode').val()) {
-                        alert('Please Enter Post Code in Dialogue Box First');
-                        $(this).steps("previous");
-
-                        $('#exampleModal').modal('show');
-                        return;
-
-                    }
                 }
                 if (currentIndex == 2) {
                     var totalminutes = 0;
@@ -331,10 +317,10 @@
                         ],
                         selectConstraint: "businessHours",
                         select: function (info) {
+                            let eventsin = calendar.getEvents();
+                            console.log(eventsin);
                             if (calendar.getEvents().length >= 1) {
-
-                                alert("Sorry, you are only allowed to choose 1 Slot.");
-                                return false;
+                                eventsin[0].remove();
                             }
                             console.log(totalminutes);
                             let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
@@ -363,6 +349,7 @@
         $(".add_on_div").hide();
         $(".id_services_div").hide();
         $("#id_services").select2({});
+        $('#id_service_types').select2({});
         $('#id_staff').empty();
         $("#id_add_services").select2({
             multiple: true,
@@ -546,7 +533,7 @@
             // When the user selects an address from the drop-down, populate the
             // address fields in the form.
             autocomplete.addListener('place_changed', function () {
-                fillInAddress();
+
                 searchBox.setBounds(map.getBounds());
             });
             var markers = [];
