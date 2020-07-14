@@ -4,6 +4,30 @@ from django.urls import reverse
 from users.models import Customer, Staff
 from services.models import Service
 
+WEEKDAYS = [
+    (1, _("Monday")),
+    (2, _("Tuesday")),
+    (3, _("Wednesday")),
+    (4, _("Thursday")),
+    (5, _("Friday")),
+    (6, _("Saturday")),
+    (7, _("Sunday")),
+]
+
+
+class BusinessHours(models.Model):
+    weekday = models.IntegerField(choices=WEEKDAYS)
+    from_hour = models.TimeField()
+    to_hour = models.TimeField()
+
+    class Meta:
+        ordering = ('weekday', 'from_hour')
+        unique_together = ('weekday', 'from_hour', 'to_hour')
+
+    def __str__(self):
+        return u'%s: %s - %s' % (self.get_weekday_display(),
+                                 self.from_hour, self.to_hour)
+
 
 class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="addresses")
