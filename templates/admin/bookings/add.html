@@ -533,7 +533,7 @@
             // When the user selects an address from the drop-down, populate the
             // address fields in the form.
             autocomplete.addListener('place_changed', function () {
-
+                fillInAddress();
                 searchBox.setBounds(map.getBounds());
             });
             var markers = [];
@@ -593,7 +593,7 @@
 
             var place = autocomplete.getPlace();
 
-            $('#exampleModal').modal('show');
+            // $('#exampleModal').modal('show');
 
             for (var component in componentForm) {
                 document.getElementById(component).value = '';
