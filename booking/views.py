@@ -76,13 +76,13 @@ def store_booking(request):
         addr = Address.objects.create(street_name=request.POST['street_name'], country=request.POST['country'],
                                       suburb=request.POST['suburb'], lat=request.POST['lat'], long=request.POST['long'],
                                       customer=customer, details=request.POST['details'], state=request.POST['state'],
-                                      postcode=request.POST['postcode'])
+                                      postcode=request.POST['postcode'], full_addreess=request.POST['address_det'])
     else:
         customer = Customer.objects.get(id=request.POST['customer'])
         addr = Address.objects.create(street_name=request.POST['street_name'], country=request.POST['country'],
                                       suburb=request.POST['suburb'], lat=request.POST['lat'], long=request.POST['long'],
                                       customer=customer, details=request.POST['details'], state=request.POST['state'],
-                                      postcode=request.POST['postcode'])
+                                      postcode=request.POST['postcode'], full_addreess=request.POST['address_det'])
 
     customer = Customer.objects.get(id=request.POST['customer'])
     staff = Staff.objects.get(id=request.POST['staff'])

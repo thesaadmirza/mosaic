@@ -33,6 +33,7 @@ class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="addresses")
     lat = models.CharField(_("Latitude"), max_length=30)
     long = models.CharField(_("Longitude"), max_length=30)
+    full_addreess = models.CharField(_("Full Address"), max_length=250)
     street_name = models.CharField(_("Street Number and Name"), max_length=100, blank=True, null=True)
     details = models.CharField(_("Details"), max_length=100, blank=True, null=True)
     suburb = models.CharField(_("Suburb"), max_length=100, blank=True, null=True)
@@ -41,7 +42,7 @@ class Address(models.Model):
     country = models.CharField(_("Country"), max_length=50)
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.full_addreess)
 
 
 # Create your models here.

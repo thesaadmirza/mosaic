@@ -211,7 +211,7 @@
             {% for booking in events %}
                 {
                     id: {{ booking.id }},
-                    title: "{{ booking.address.details }}",
+                    title: "{{ booking.address.full_addreess }}",
                     start: "{{ booking.start_time.isoformat  }}",
                     end: "{{ booking.end_time.isoformat  }}",
                     className: "bg-danger",
