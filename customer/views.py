@@ -15,7 +15,7 @@ from utils.strings import get_random_alphaNumeric_string
 
 
 # Create your views here.
-class CustomersListView(ListView, LoginRequiredMixin):
+class CustomersListView(LoginRequiredMixin, ListView):
     model = Customer
     queryset = Customer.objects.all()
     template_name = 'admin/customers/list.html'
@@ -24,7 +24,7 @@ class CustomersListView(ListView, LoginRequiredMixin):
 
 
 
-class CustomerCreateView(CreateView, LoginRequiredMixin):
+class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'admin/customers/add.html'
@@ -53,18 +53,18 @@ class CustomerCreateView(CreateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class CustomerView(DetailView):
+class CustomerView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'admin/customers/view.html'
 
 
-class CustomersUpdate(UpdateView):
+class CustomersUpdate(LoginRequiredMixin, UpdateView):
     model = Customer
     form_class = CustomerFormE
     success_url = reverse_lazy('customers:list')
     template_name = 'admin/customers/update.html'
 
-class CustomerDelete(DeleteView):
+class CustomerDelete(LoginRequiredMixin, DeleteView):
     model = Customer
     template_name = 'admin/customers/delete.html'
     success_url = reverse_lazy('customer:list')

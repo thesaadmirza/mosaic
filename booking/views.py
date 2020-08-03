@@ -20,7 +20,7 @@ def calendar(request):
 
 
 # Create your views here.
-class BookingListView(ListView, LoginRequiredMixin):
+class BookingListView(LoginRequiredMixin, ListView):
     model = Booking
     queryset = Booking.objects.all()
     template_name = 'admin/bookings/list.html'
@@ -29,7 +29,7 @@ class BookingListView(ListView, LoginRequiredMixin):
         return Booking.objects.reverse().all()
 
 
-class BookingCreateView(CreateView, FormView):
+class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
     model = Booking
     form_class = BookingForm
     template_name = 'admin/bookings/add.html'
@@ -44,20 +44,20 @@ class BookingCreateView(CreateView, FormView):
         return context
 
 
-class BookingsUpdate(UpdateView):
+class BookingsUpdate(LoginRequiredMixin, UpdateView):
     model = Booking
     form_class = BookingForm
     success_url = reverse_lazy('booking:list')
     template_name = 'admin/bookings/update.html'
 
 
-class BookingDelete(DeleteView):
+class BookingDelete(LoginRequiredMixin, DeleteView):
     model = Booking
     template_name = 'admin/bookings/delete.html'
     success_url = reverse_lazy('booking:list')
 
 
-class BookingView(DetailView):
+class BookingView(LoginRequiredMixin, DetailView):
     model = Booking
     template_name = 'admin/bookings/view.html'
 
@@ -67,7 +67,7 @@ def booking_events_json(request):
     data = list(bookings)
     return HttpResponse(json.dumps(data), content_type="application/json")
 
-
+@login_required
 def store_booking(request):
     address = AddressForm(request.POST)
     addr = None

@@ -589,7 +589,7 @@
             // Get the place details from the autocomplete object.
 
             var place = autocomplete.getPlace();
-
+            console.log(place);
             // $('#exampleModal').modal('show');
 
             for (var component in componentForm) {
@@ -624,6 +624,7 @@
                 }
 
                 if (addressType == "postal_code") {
+                    console.log(place.address_components);
                     var val = place.address_components[i][componentForm['id_postcode']];
                     document.getElementById('id_postcode').value = val;
                 }

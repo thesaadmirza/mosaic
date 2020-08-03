@@ -8,32 +8,32 @@ import json
 
 
 # Create your views here.
-class ServicesListView(ListView, LoginRequiredMixin):
+class ServicesListView(LoginRequiredMixin, ListView):
     model = Service
     queryset = Service.objects.all()
     template_name = 'admin/services/list.html'
 
 
-class ServicesCreateView(CreateView, FormView):
+class ServicesCreateView(LoginRequiredMixin, CreateView, FormView):
     model = Service
     form_class = ServiceForm
     template_name = 'admin/services/add.html'
 
 
-class ServicesUpdate(UpdateView):
+class ServicesUpdate(LoginRequiredMixin, UpdateView):
     model = Service
     form_class = ServiceForm
     success_url = reverse_lazy('services:list')
     template_name = 'admin/services/update.html'
 
 
-class ServiceDelete(DeleteView):
+class ServiceDelete(LoginRequiredMixin, DeleteView):
     model = Service
     template_name = 'admin/services/delete.html'
     success_url = reverse_lazy('services:list')
 
 
-class ServiceView(DetailView):
+class ServiceView(LoginRequiredMixin, DetailView):
     model = Service
     template_name = 'admin/services/view.html'
 

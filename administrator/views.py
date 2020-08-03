@@ -18,7 +18,7 @@ def index(request):
 
 
 # Create your views here.
-class CustomersListView(ListView, LoginRequiredMixin):
+class CustomersListView(LoginRequiredMixin, ListView):
     model = Customer
     queryset = Customer.objects.all()
     template_name = 'admin/customers/list.html'
@@ -29,7 +29,7 @@ def get_random_alphaNumeric_string(stringLength=8):
     return ''.join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
 
-class CustomerCreateView(CreateView, LoginRequiredMixin):
+class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'admin/customers/add.html'
@@ -58,6 +58,6 @@ class CustomerCreateView(CreateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class CustomerView(DetailView):
+class CustomerView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'admin/customers/view.html'

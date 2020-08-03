@@ -15,7 +15,7 @@ import json
 
 
 # Create your views here.
-class StaffListView(ListView, LoginRequiredMixin):
+class StaffListView(LoginRequiredMixin, ListView):
     model = Staff
     queryset = Staff.objects.all()
     template_name = 'admin/staff/list.html'
@@ -29,7 +29,7 @@ class StaffListView(ListView, LoginRequiredMixin):
         return Staff.objects.filter(customer_id__exact=self.kwargs.get('customer'))
 
 
-class StaffCreateView(CreateView, LoginRequiredMixin):
+class StaffCreateView(LoginRequiredMixin, CreateView):
     model = Staff
     form_class = StaffForm
     template_name = 'admin/staff/add.html'
@@ -63,7 +63,7 @@ class StaffCreateView(CreateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class StaffUpdate(UpdateView):
+class StaffUpdate(LoginRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffFormE
     template_name = 'admin/staff/update.html'
@@ -77,7 +77,7 @@ class StaffUpdate(UpdateView):
         return reverse_lazy('staff:index', kwargs={'customer': self.kwargs.get('customer')})
 
 
-class StaffView(DetailView):
+class StaffView(LoginRequiredMixin, DetailView):
     model = Staff
     template_name = 'admin/staff/view.html'
 
@@ -87,7 +87,7 @@ class StaffView(DetailView):
         return context
 
 
-class StaffDelete(DeleteView):
+class StaffDelete(LoginRequiredMixin, DeleteView):
     model = Staff
     template_name = 'admin/staff/delete.html'
 
