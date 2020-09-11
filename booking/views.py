@@ -11,12 +11,30 @@ import json
 from datetime import datetime, timedelta
 from django.utils import dateparse
 from django.shortcuts import redirect
+from django.conf import settings
+# Google Calendar Code IMport
+from utils.credentials import get_calendar_service
+import datetime
+
+
+# Ends Here Google Calendar
 
 
 @login_required
 def calendar(request):
     events = Booking.objects.all()
-    return render(request, 'admin/bookings/calendar.html', {'events': events})
+    # Get Calendar Service from Utitls
+
+    service = get_calendar_service(request)
+
+    # Call the Calendar API
+    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    events_result = service.events().list(calendarId=request.user.email, timeMin=now,
+                                          maxResults=100, singleEvents=True,
+                                          orderBy='startTime').execute()
+
+    events_g = events_result.get('items', [])
+    return render(request, 'admin/bookings/calendar.html', {'events': events, 'events_g': events_g})
 
 
 # Create your views here.
@@ -67,6 +85,7 @@ def booking_events_json(request):
     data = list(bookings)
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+
 @login_required
 def store_booking(request):
     address = AddressForm(request.POST)
@@ -108,7 +127,24 @@ def store_booking(request):
                 savedB.service.add(service)
 
         savedB.save()
+        description = 'Address : ' + savedB.address.full_addreess + '<br>' + 'Customer : ' + customer.company_name + '<br>' + 'Staff : ' + staff.name
 
+        service = get_calendar_service(request)
+        event = service.events().insert(calendarId=request.user.email
+                                        , body={
+                'summary': savedB.address.full_addreess,
+                'location': savedB.address.full_addreess,
+                'description': description,
+                'status': 'confirmed',
+                'notes': savedB.notes,
+                'start': {'dateTime': savedB.start_time.isoformat()},
+                'end': {'dateTime': savedB.end_time.isoformat()},
+                'sendNotifications ': True,
+                'attendees': [
+                    {'email': customer.user.email},
+                    {'email': staff.user.email},
+                ],
+            }).execute()
 
     else:
 

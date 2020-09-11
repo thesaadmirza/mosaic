@@ -40,6 +40,7 @@
             <div class="statbox widget box box-shadow">
                 <div class="widget-content widget-content-area">
                     <div class="calendar-upper-section">
+
                         <div class="row">
                             <div class="col-md-8 col-12">
                                 <div class="labels">
@@ -185,6 +186,7 @@
                         <button id="discard" class="btn" data-dismiss="modal">Discard</button>
                         <button id="add-e" class="btn">Add Booking</button>
                         <button id="edit-event" class="btn">Save</button>
+
                     </div>
 
                 </div>
@@ -207,6 +209,7 @@
     <script src="{% static 'plugins/fullcalendar/fullcalendar.min.js' %}"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
     <script type="text/javascript">
+
         var django_events = [
             {% for booking in events %}
                 {
@@ -218,6 +221,17 @@
                     description: 'Customer : {{ booking.customer.company_name }}. Staff : {{ booking.staff.name }}'
                 },
             {% endfor %}
+            {% for event in events_g %}
+                {
+                    id: '{{ event.id }}',
+                    title: "{{ event.creator.email }}",
+                    start: "{{ event.start.dateTime  }}",
+                    end: "{{ event.end.dateTime  }}",
+                    className: "bg-danger",
+                    description: "{{ event.summary }}"
+                },
+            {% endfor %}
+
 
         ];
     </script>

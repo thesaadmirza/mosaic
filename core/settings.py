@@ -49,7 +49,7 @@ LOGIN_REDIRECT_URL = '/'
 
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = False
+ACCOUNT_ALLOW_REGISTRATION = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
@@ -67,6 +67,7 @@ ACCOUNT_ADAPTER = "users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "users.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "mosaicmedia.com"
+SOCIALACCOUNT_STORE_TOKENS = True
 
 # Application definition
 
@@ -90,6 +91,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    
 ]
 
 MIDDLEWARE = [
@@ -160,8 +163,29 @@ AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend"
+    "allauth.account.auth_backends.AuthenticationBackend",
+
 )
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '340264182095-suaod6bbg4q7ara77ih7inovkr2420bv.apps.googleusercontent.com',
+            'secret': '_p4cAt7lk2qFYCAevjyeuvZJ',
+            'key': 'AIzaSyADoLaI3Jlc2wVT-ISO-owBJvl3CSEjkCU'
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+            'openid',
+            'https://www.googleapis.com/auth/calendar'
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

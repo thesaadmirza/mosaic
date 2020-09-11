@@ -24,6 +24,7 @@ urlpatterns = [
                   path('booking/', include('booking.urls'), name="booking"),
                   path('customer/', include('customer.urls'), name="customer"),
                   path('staff/', include('staff.urls'), name="staff"),
+                  path('user/', include('users.urls'), name="users"),
                   path('admin/', admin.site.urls),
                   path('accounts/', include('allauth.urls'), name="accounts"),
                   path('i18n/', include('django.conf.urls.i18n')),
