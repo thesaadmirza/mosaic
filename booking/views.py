@@ -24,16 +24,20 @@ import datetime
 def calendar(request):
     events = Booking.objects.all()
     # Get Calendar Service from Utitls
+    events_g = []
+    try:
+        if (request.user.social_auth.exists()):
+            service = get_calendar_service(request)
 
-    service = get_calendar_service(request)
+            # Call the Calendar API
+            now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+            events_result = service.events().list(calendarId=request.user.email, timeMin=now,
+                                                  maxResults=100, singleEvents=True,
+                                                  orderBy='startTime').execute()
 
-    # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    events_result = service.events().list(calendarId=request.user.email, timeMin=now,
-                                          maxResults=100, singleEvents=True,
-                                          orderBy='startTime').execute()
-
-    events_g = events_result.get('items', [])
+            events_g = events_result.get('items', [])
+    except Exception as e:
+        print(e)
     return render(request, 'admin/bookings/calendar.html', {'events': events, 'events_g': events_g})
 
 
@@ -55,7 +59,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
-        context['events'] = Booking.objects.all()
+        context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today()).all()
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
         context['services'] = Service.objects.filter(add_on=False)

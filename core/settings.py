@@ -20,7 +20,7 @@ SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
     ('en', _('English')),
     ('zh-CN', _('Chinese')),
@@ -92,7 +92,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -192,7 +192,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Sydney'
 
 USE_I18N = True
 
