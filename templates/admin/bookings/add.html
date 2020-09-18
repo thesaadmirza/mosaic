@@ -231,6 +231,15 @@
 
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
     <script src="{% static 'plugins/fullcalendar/moment.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/4.0.2/moment-range.js"
+            integrity="sha512-XKgbGNDruQ4Mgxt7026+YZFOqHY6RsLRrnUJ5SVcbWMibG46pPAC97TJBlgs83N/fqPTR0M89SWYOku6fQPgyw=="
+            crossorigin="anonymous"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+    <script>
+        window['moment-range'].extendMoment(moment);
+        moment.tz.setDefault("Australia/Sydney");
+    </script>
+
     <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
     <script src="https://unpkg.com/fullcalendar@5.1.0/main.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
@@ -240,20 +249,43 @@
             console.log("change", this);
         });
     </script>
+    <script type="text/javascript">
 
+        var django_events = [
+            {% for booking in events %}
+                {
+                    id: {{ booking.id }},
+                    title: "Booked",
+                    start: "{{ booking.start_time|date:"c"  }}",
+                    end: "{{ booking.end_time|date:"c"  }}",
+                    className: "bg-danger",
+                    overlap: false,
+                },
+            {% endfor %}
+
+
+
+        ];
+    </script>
     <script>
 
         var hours = [
             {% for h in hours %}
                 {
+
                     daysOfWeek: [{{ h.weekday }}], // Monday, Tuesday, Wednesday
                     startTime: '{{ h.from_hour|date:'H:i' }}', // 8am
-                    endTime: '{{ h.to_hour|date:'H:i' }}' // 6pm
+                    endTime: '{{ h.to_hour|date:'H:i' }}', // 6pm
+
                 },
             {% endfor %}
         ]
         var calendarEl = document.getElementById('addCalendarBooking');
 
+        function isOverlapping(startDate1, endDate1, startDate2, endDate2) {
+            return moment(startDate1).isSameOrBefore(endDate2) &&
+                moment(startDate2).isSameOrBefore(endDate1);
+        }
 
         $("#example-basic").steps({
             headerTag: "h3",
@@ -280,7 +312,7 @@
                     var add_on_duration = $('#id_add_services :selected');
                     if (add_on_duration) {
                         add_on_duration.each(function (index) {
-                            console.log($(this).data().time, 'time up')
+
                             totalminutes = totalminutes + $(this).data().time;
                         });
                     }
@@ -289,38 +321,61 @@
                         alert("Please Choose Service From Previous Menu First. So System can find Suitable Time Slot According to Given Service.");
                         $(this).steps("previous");
                         return;
-
                         return false;
                     }
                     var calendarEl = document.getElementById('addCalendarBooking');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
-                        timeZone: 'UTC',
+                        timeZone: 'Australia/Sydney',
                         selectable: true,
                         themeSystem: 'bootstrap4',
                         initialView: 'timeGridWeek',
+                        eventOverlap: false,
+                        slotEventOverlap: false,
+
                         slotDuration: '00:15:00',
-                        slotLabelInterval: selectDuration,
-                        defaultTimedEventDuration: '00:' + selectDuration + ':00',
+                        slotLabelInterval: '00:15:00',
                         eventLimit: 1,
                         headerToolbar: {
                             left: 'prev,next today',
                             center: 'title',
                             right: 'timeGridWeek,timeGridDay'
                         },
-
-                        selectOverlap: function (event) {  // this function will be used for overlap see wiki https://fullcalendar.io/docs/selectOverlap
-                            return event.rendering === 'background';
-                        },
+                        events: django_events,
                         businessHours: hours,
+                        selectOverlap: false,
                         selectConstraint: "businessHours",
                         select: function (info) {
-                            let eventsin = calendar.getEvents();
-                            console.log(eventsin);
-                            if (calendar.getEvents().length >= 1) {
-                                eventsin[0].remove();
+                            console.log(selectDuration, totalminutes);
+                            const infomstart = info.start
+                            const infomend = moment(info.end).add(selectDuration, 'minutes');
+                            const range1 = moment.range(infomstart, infomend);
+                            let mstart;
+                            let mend;
+                            let range2;
+                            for (i = 0; i < django_events.length; i++) {
+                                mstart = moment(django_events[i].start);
+                                mend = moment(django_events[i].end);
+                                range2 = moment.range(mstart, mend);
+                                if (mstart >= infomstart && mstart <= infomend) {
+                                    alert("Sorry, this is overlapping with existing events");
+                                    return;
+                                }
+                                if (mend >= infomstart && mend <= infomend) {
+                                    alert("Sorry, this is overlapping with existing events");
+                                    return;
+                                }
+                                if (mstart.within(range1) || mend.within(range1)) {
+                                    alert("Sorry, This Slot is overlapping with Existing Booking. You need " + selectDuration + " Minutes for this Service")
+                                }
+
                             }
-                            console.log(totalminutes);
-                            let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
+                            let eventsin = calendar.getEvents();
+
+                            if (calendar.getEvents().length > django_events.length) {
+                                eventsin[django_events.length].remove();
+                            }
+
+                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(totalminutes, 'minutes').toISOString();
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
@@ -333,7 +388,7 @@
                     });
                     calendar.render();
                 }
-                console.log(event, currentIndex, newIndex);
+
             },
             refresh: true,
             saveState: true,

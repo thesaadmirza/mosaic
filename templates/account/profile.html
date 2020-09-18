@@ -71,7 +71,8 @@
                             {% endif %}
                         </form>
                         {% if user.socialaccount_set.all %}
-                            <span class="btn btn-success">Connected With Google</span>
+                            <span class="btn btn-success">Connected With Google</span> <a class="btn bt-info" href="{% provider_login_url 'google' %}">Connect with
+                                Google</a>
                         {% else %}
                             <a class="btn bt-info" href="{% provider_login_url 'google' %}">Connect with
                                 Google</a> {% endif %}

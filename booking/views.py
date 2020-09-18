@@ -55,6 +55,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
+        context['events'] = Booking.objects.all()
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
         context['services'] = Service.objects.filter(add_on=False)
