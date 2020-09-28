@@ -280,11 +280,7 @@
     <script src="https://unpkg.com/fullcalendar@5.1.0/main.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
 
-    <script>
-        $("#example-basic").on('change', '.namer', function () {
-            console.log("change", this);
-        });
-    </script>
+
     <script type="text/javascript">
 
         var django_events = [
@@ -295,11 +291,12 @@
                     start: "{{ booking.start_time|date:"c"  }}",
                     end: "{{ booking.end_time|date:"c"  }}",
                     className: "bg-danger",
+                    lat: "{{ booking.address.lat }}",
+                    long: "{{ booking.address.long }}",
+                    address: "{{ booking.address.full_addreess }}",
                     overlap: false,
                 },
             {% endfor %}
-
-
 
         ];
     </script>
@@ -339,9 +336,41 @@
                         $(this).steps("previous");
                         return;
                     }
+                    $.each(django_events, function (index, value) {
+
+                        var from = new google.maps.LatLng(value.lat, value.long);
+                        var fromName = value.address;
+                        var dest = new google.maps.LatLng($('#id_lat').val(), $('#id_long').val());
+                        var destName = $('#id_address').val();
+
+                        var service = new google.maps.DistanceMatrixService();
+                        service.getDistanceMatrix(
+                            {
+                                origins: [from, fromName],
+                                destinations: [destName, dest],
+                                travelMode: 'DRIVING'
+                            }, callback);
+
+                        function callback(response, status) {
+
+                            if (status == 'OK') {
+                                $.each(response.rows, function (indexed, NValue) {
+                                    if (NValue.elements[0].status == "OK") {
+                                        console.log(NValue.elements[0].duration, "Time Add Here in current Event", value);
+                                        django_events[index].end = moment(value.end).add(parseInt(NValue.elements[0].duration.value / 60), 'minutes');
+                                        return false;
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+
 
                 }
                 if (currentIndex == 2) {
+
+
                     var totalminutes = 0;
                     var selectDuration = $('#id_services :selected').data().time;
                     totalminutes = totalminutes + selectDuration;
@@ -352,7 +381,7 @@
                             totalminutes = totalminutes + $(this).data().time;
                         });
                     }
-                    console.log(add_on_duration);
+
                     if (!selectDuration && !totalminutes) {
                         alert("Please Choose Service From Previous Menu First. So System can find Suitable Time Slot According to Given Service.");
                         $(this).steps("previous");
@@ -368,7 +397,7 @@
                         eventOverlap: false,
                         slotEventOverlap: false,
 
-                        slotDuration: '00:15:00',
+                       
                         slotLabelInterval: '00:15:00',
                         eventLimit: 1,
                         headerToolbar: {
@@ -381,7 +410,7 @@
                         selectOverlap: false,
                         selectConstraint: "businessHours",
                         select: function (info) {
-                            console.log(selectDuration, totalminutes);
+
                             const infomstart = info.start
                             const infomend = moment(info.end).add(selectDuration, 'minutes');
                             const range1 = moment.range(infomstart, infomend);
