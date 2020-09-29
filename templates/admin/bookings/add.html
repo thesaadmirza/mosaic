@@ -283,7 +283,7 @@
 
     <script type="text/javascript">
 
-        var django_events = [
+        var django_events_old = [
             {% for booking in events %}
                 {
                     id: {{ booking.id }},
@@ -320,6 +320,7 @@
                 moment(startDate2).isSameOrBefore(endDate1);
         }
 
+        var django_events = [];
         $("#example-basic").steps({
             headerTag: "h3",
             bodyTag: "section",
@@ -336,7 +337,7 @@
                         $(this).steps("previous");
                         return;
                     }
-                    $.each(django_events, function (index, value) {
+                    $.each(django_events_old, function (index, value) {
 
                         var from = new google.maps.LatLng(value.lat, value.long);
                         var fromName = value.address;
@@ -356,14 +357,17 @@
                             if (status == 'OK') {
                                 $.each(response.rows, function (indexed, NValue) {
                                     if (NValue.elements[0].status == "OK") {
-                                        console.log(NValue.elements[0].duration, "Time Add Here in current Event", value);
-                                        django_events[index].end = moment(value.end).add(parseInt(NValue.elements[0].duration.value / 60), 'minutes');
+
+                                        value.end = moment(value.end).add(parseInt(NValue.elements[0].duration.value / 60), 'minutes').toISOString();
+                                        value.start = moment(value.start).toISOString();
                                         return false;
                                     }
                                 });
 
                             }
                         }
+
+                        django_events.push(value);
                     });
 
 
@@ -388,6 +392,7 @@
                         return;
                         return false;
                     }
+                    console.log(django_events);
                     var calendarEl = document.getElementById('addCalendarBooking');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         timeZone: 'Australia/Sydney',
@@ -397,7 +402,7 @@
                         eventOverlap: false,
                         slotEventOverlap: false,
 
-                       
+                        slotDuration: '00:15:00',
                         slotLabelInterval: '00:15:00',
                         eventLimit: 1,
                         headerToolbar: {
@@ -410,7 +415,7 @@
                         selectOverlap: false,
                         selectConstraint: "businessHours",
                         select: function (info) {
-
+                            console.log(selectDuration, "Checking Here from now");
                             const infomstart = info.start
                             const infomend = moment(info.end).add(selectDuration, 'minutes');
                             const range1 = moment.range(infomstart, infomend);
