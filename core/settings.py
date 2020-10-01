@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
-USE_TZ = True
+USE_TZ = False
 TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
     ('en', _('English')),
@@ -189,7 +189,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
