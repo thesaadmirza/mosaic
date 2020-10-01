@@ -271,11 +271,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/4.0.2/moment-range.js"
             integrity="sha512-XKgbGNDruQ4Mgxt7026+YZFOqHY6RsLRrnUJ5SVcbWMibG46pPAC97TJBlgs83N/fqPTR0M89SWYOku6fQPgyw=="
             crossorigin="anonymous"></script>
-    <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
-    <script>
-        window['moment-range'].extendMoment(moment);
-        moment.tz.setDefault("Australia/Sydney");
-    </script>
+
 
     <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
     <script src="https://unpkg.com/fullcalendar@5.1.0/main.min.js" type="text/javascript"></script>
@@ -446,7 +442,7 @@
                                 eventsin[django_events.length].remove();
                             }
 
-                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(totalminutes, 'minutes').toISOString();
+                            let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
