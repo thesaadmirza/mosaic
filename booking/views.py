@@ -134,23 +134,25 @@ def store_booking(request):
 
         savedB.save()
         description = 'Address : ' + savedB.address.full_addreess + '<br>' + 'Customer : ' + customer.company_name + '<br>' + 'Staff : ' + staff.name
-
-        service = get_calendar_service(request)
-        event = service.events().insert(calendarId=request.user.email
-                                        , body={
-                'summary': savedB.address.full_addreess,
-                'location': savedB.address.full_addreess,
-                'description': description,
-                'status': 'confirmed',
-                'notes': savedB.notes,
-                'start': {'dateTime': savedB.start_time.isoformat()},
-                'end': {'dateTime': savedB.end_time.isoformat()},
-                'sendNotifications ': True,
-                'attendees': [
-                    {'email': customer.user.email},
-                    {'email': staff.user.email},
-                ],
-            }).execute()
+        try:
+            service = get_calendar_service(request)
+            event = service.events().insert(calendarId=request.user.email
+                                            , body={
+                    'summary': savedB.address.full_addreess,
+                    'location': savedB.address.full_addreess,
+                    'description': description,
+                    'status': 'confirmed',
+                    'notes': savedB.notes,
+                    'start': {'dateTime': savedB.start_time.isoformat()},
+                    'end': {'dateTime': savedB.end_time.isoformat()},
+                    'sendNotifications ': True,
+                    'attendees': [
+                        {'email': customer.user.email},
+                        {'email': staff.user.email},
+                    ],
+                }).execute()
+        except Exception as e:
+            print(e)
 
     else:
 
