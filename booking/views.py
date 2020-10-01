@@ -13,6 +13,7 @@ from django.utils import dateparse
 from django.shortcuts import redirect
 from django.conf import settings
 # Google Calendar Code IMport
+from core.mixins import SocialLoginRequiredMixin
 from utils.credentials import get_calendar_service
 import datetime
 
@@ -62,10 +63,6 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
         context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today()).all()
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
-        try:
-            service = get_calendar_service(self.request)
-        except:
-            return redirect('/user/profile?token=refresh')
         context['services'] = Service.objects.filter(add_on=False)
         context['add_ons'] = Service.objects.filter(add_on=True)
         return context
