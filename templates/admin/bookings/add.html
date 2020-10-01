@@ -446,12 +446,11 @@
                                 eventsin[django_events.length].remove();
                             }
 
-                            let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
-                            console.log(totalminutes, 'minutes here');
+
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
-                                end: end,
+                                end: infomend,
                             });
                             $('#start_time').val(info.startStr);
                             $('#end_time').val(info.endStr)
