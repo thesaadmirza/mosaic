@@ -453,7 +453,8 @@
                                 end: moment(info.end).add(selectDuration, 'minutes'),
                             });
                             $('#start_time').val(info.startStr);
-                            $('#end_time').val(moment(info.end).add(selectDuration, 'minutes'))
+                            let localFormat = 'YYYY-MM-DD[T]HH:mm:ss';
+                            $('#end_time').val(moment(info.end).add(selectDuration, 'minutes').format(localFormat))
 
                         }
                     });
