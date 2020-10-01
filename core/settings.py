@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
-
+USE_TZ = True
 TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
     ('en', _('English')),
@@ -27,7 +27,7 @@ LANGUAGES = (
 )
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+
 LANGUAGE_CODE = 'en'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -190,15 +190,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Australia/Sydney'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
