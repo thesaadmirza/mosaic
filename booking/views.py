@@ -62,6 +62,10 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
         context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today()).all()
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
+        try:
+            service = get_calendar_service(self.request)
+        except:
+            return redirect('/user/profile?token=refresh')
         context['services'] = Service.objects.filter(add_on=False)
         context['add_ons'] = Service.objects.filter(add_on=True)
         return context
