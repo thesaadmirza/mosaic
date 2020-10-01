@@ -77,3 +77,8 @@ class Booking(models.Model):
 
     def get_absolute_url(self):
         return reverse('booking:view', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        self.start_time = self.start_time.replace(tzinfo=None)
+        self.end_time = self.end_time.replace(tzinfo=None)
+        super(Booking, self).save(*args, **kwargs)
