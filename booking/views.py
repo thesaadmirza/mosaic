@@ -132,7 +132,7 @@ def store_booking(request):
         if (request.POST.getlist('add_on')):
             for add in request.POST.getlist('add_on'):
                 service = Service.objects.get(id=add)
-                savedB.end_time = savedB.start_time + timedelta(minutes=service.time)
+                savedB.end_time = savedB.end_time + timedelta(minutes=service.time)
                 savedB.service.add(service)
 
         savedB.save()
