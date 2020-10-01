@@ -418,7 +418,7 @@
                         select: function (info) {
                             console.log(selectDuration, "Checking Here from now");
                             const infomstart = info.start
-                            const infomend = moment(info.end).add(selectDuration, 'minutes');
+                            const infomend = moment(info.end).add(totalminutes, 'minutes');
                             const range1 = moment.range(infomstart, infomend);
                             let mstart;
                             let mend;
@@ -436,7 +436,7 @@
                                     return;
                                 }
                                 if (mstart.within(range1) || mend.within(range1)) {
-                                    alert("Sorry, This Slot is overlapping with Existing Booking. You need " + selectDuration + " Minutes for this Service")
+                                    alert("Sorry, This Slot is overlapping with Existing Booking. You need " + totalminutes + " Minutes for this Service")
                                 }
 
                             }
@@ -446,15 +446,15 @@
                                 eventsin[django_events.length].remove();
                             }
 
-                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(selectDuration, 'minutes').toISOString();
+                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(totalminutes, 'minutes').toISOString();
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
-                                end: moment(info.end).add(selectDuration, 'minutes'),
+                                end: moment(info.end).add(totalminutes, 'minutes'),
                             });
                             $('#start_time').val(info.startStr);
                             let localFormat = 'YYYY-MM-DD[T]HH:mm:ss';
-                            $('#end_time').val(moment(info.end).add(selectDuration, 'minutes').format(localFormat))
+                            $('#end_time').val(moment(info.end).add(totalminutes, 'minutes').format(localFormat))
 
                         }
                     });
