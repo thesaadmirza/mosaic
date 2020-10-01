@@ -207,6 +207,11 @@
     <script src="{% static 'plugins/fullcalendar/moment.min.js' %}"></script>
     <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
     <script src="{% static 'plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+    <script>
+        window['moment-range'].extendMoment(moment);
+        moment.tz.setDefault("Australia/Sydney");
+    </script>
     <!-- END PAGE LEVEL SCRIPTS -->
     <script type="text/javascript">
 
