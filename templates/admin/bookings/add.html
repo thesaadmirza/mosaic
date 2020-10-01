@@ -446,7 +446,7 @@
                                 eventsin[django_events.length].remove();
                             }
 
-                            let end = moment(info.startStr, 'Australia/Sydney').add(selectDuration, 'minutes').toISOString();
+                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(selectDuration, 'minutes').toISOString();
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
