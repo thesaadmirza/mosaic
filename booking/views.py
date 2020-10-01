@@ -114,7 +114,7 @@ def store_booking(request):
     service = Service.objects.get(id=request.POST['services'])
     addres = Address.objects.get(id=addr.id)
     updated_data = request.POST.copy()
-    
+
     updated_data.update({'start_time': dateparse.parse_datetime(request.POST['start_time']),
                          'end_time': dateparse.parse_datetime(request.POST['end_time']), 'address': addres,
                          'customer': customer, 'staff': staff, 'key_no': request.POST['key_no'],
