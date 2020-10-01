@@ -9,7 +9,6 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime, timedelta
-from django.utils import timezone
 from django.utils import dateparse
 from django.shortcuts import redirect
 from django.conf import settings
@@ -115,11 +114,9 @@ def store_booking(request):
     service = Service.objects.get(id=request.POST['services'])
     addres = Address.objects.get(id=addr.id)
     updated_data = request.POST.copy()
-    start_time = timezone.make_aware(dateparse.parse_datetime(request.POST['start_time']),
-                                     timezone.get_default_timezone())
-    end_time = timezone.make_aware(dateparse.parse_datetime(request.POST['end_time']), timezone.get_default_timezone())
-    updated_data.update({'start_time': start_time,
-                         'end_time': end_time, 'address': addres,
+    
+    updated_data.update({'start_time': dateparse.parse_datetime(request.POST['start_time']),
+                         'end_time': dateparse.parse_datetime(request.POST['end_time']), 'address': addres,
                          'customer': customer, 'staff': staff, 'key_no': request.POST['key_no'],
                          'job_reference': request.POST['job_reference'], 'notes': request.POST['notes'],
                          'private_notes': request.POST['private_notes']})
