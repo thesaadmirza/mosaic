@@ -447,6 +447,7 @@
                             }
 
                             let end = moment(info.startStr).add(totalminutes, 'minutes').toISOString();
+                            console.log(totalminutes, 'minutes here');
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
