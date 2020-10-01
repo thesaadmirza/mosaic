@@ -17,6 +17,9 @@ from django.conf import settings
 from core.mixins import SocialLoginRequiredMixin
 from utils.credentials import get_calendar_service
 import datetime
+import pytz
+
+tz = pytz.timezone('Australia/Sydney')
 
 
 # Ends Here Google Calendar
@@ -115,8 +118,8 @@ def store_booking(request):
     service = Service.objects.get(id=request.POST['services'])
     addres = Address.objects.get(id=addr.id)
     updated_data = request.POST.copy()
-    start_time = timezone.make_aware(request.POST['start_time'], timezone.get_default_timezone())
-    end_time = timezone.make_aware(request.POST['end_time'], timezone.get_default_timezone())
+    start_time = timezone.make_aware(request.POST['start_time'], tz)
+    end_time = timezone.make_aware(request.POST['end_time'], tz)
     updated_data.update({'start_time': start_time,
                          'end_time': end_time, 'address': addres,
                          'customer': customer, 'staff': staff, 'key_no': request.POST['key_no'],
