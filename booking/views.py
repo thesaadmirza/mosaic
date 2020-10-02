@@ -60,7 +60,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
-        context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today()).all()
+        context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today() - timedelta(days=1)).all()
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
         context['services'] = Service.objects.filter(add_on=False)

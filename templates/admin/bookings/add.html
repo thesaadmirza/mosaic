@@ -358,7 +358,7 @@
                             if (status == 'OK') {
                                 $.each(response.rows, function (indexed, NValue) {
                                     if (NValue.elements[0].status == "OK") {
-
+                                        console.log(NValue.elements[0].duration.value / 60 + 'minutes added, Travel Mode Driving');
                                         value.end = moment(value.end).add(parseInt(NValue.elements[0].duration.value / 60), 'minutes').toISOString();
                                         value.start = moment(value.start).toISOString();
                                         return false;
