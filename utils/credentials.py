@@ -1,7 +1,10 @@
-from googleapiclient.discovery import build
 from allauth.socialaccount.models import SocialToken
-from google.oauth2.credentials import Credentials
-from django.conf import settings
+
+try:
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
+except Exception as e:
+    print("Error importing Google APi CLient")
 
 
 def get_calendar_service(request):

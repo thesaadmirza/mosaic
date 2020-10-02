@@ -381,9 +381,9 @@
                     totalminutes = totalminutes + selectDuration;
                     var add_on_duration = $('#id_add_services :selected');
                     if (add_on_duration) {
-                        add_on_duration.each(function (index) {
-
-                            totalminutes = totalminutes + $(this).data().time;
+                        add_on_duration.each(function (index, value) {
+                            let time_add_on = $(this).data().time;
+                            totalminutes = totalminutes + time_add_on;
                         });
                     }
 
@@ -416,9 +416,9 @@
                         selectOverlap: false,
                         selectConstraint: "businessHours",
                         select: function (info) {
-                            console.log(selectDuration, "Checking Here from now");
+                            console.log(totalminutes, "Checking Here from now");
                             const infomstart = info.start
-                            const infomend = moment(info.end).add(totalminutes, 'minutes');
+                            const infomend = moment(info.start).add(totalminutes, 'minutes');
                             const range1 = moment.range(infomstart, infomend);
                             let mstart;
                             let mend;
@@ -450,11 +450,11 @@
                             calendar.addEvent({
                                 title: $('#id_services :selected').data().name,
                                 start: info.startStr,
-                                end: moment(info.end).add(totalminutes, 'minutes'),
+                                end: moment(info.start).add(totalminutes, 'minutes').toISOString(),
                             });
                             $('#start_time').val(info.startStr);
                             let localFormat = 'YYYY-MM-DD[T]HH:mm:ss';
-                            $('#end_time').val(moment(info.end).add(totalminutes, 'minutes').format(localFormat))
+                            $('#end_time').val(moment(info.start).add(totalminutes, 'minutes').format(localFormat))
 
                         }
                     });
