@@ -78,6 +78,12 @@
             font-weight: bold;
             margin-right: 2px;
         }
+
+        input:checked {
+            display: block;
+            color: #fff;
+            background-color: #285e8e;
+        }
     </style>
     <!-- Dropdowns sytles end -->
 {% endblock %}
@@ -137,36 +143,47 @@
                                 {{ form.service.errors }}
                                 <div class="form-group">
                                     <label for="id_service_types">What service would you like to order?</label>
-                                    <select name="service_type" required id="id_service_types"
-                                            class="form-control tagging ">
-                                        <option selected disabled>Select one Option</option>
+
+                                    <div class=" btn-group-toggle" data-toggle="buttons" id="id_service_types">
                                         {% for type in service_types %}
-                                            <option value="{{ type.id }}">{{ type.name }}</option>
+                                            <label class="btn btn-outline-primary ">
+                                                <input type="checkbox" class="id_service_types_input"
+                                                       name="service_type"
+                                                       value="{{ type.id }}"
+                                                       autocomplete="off"> {{ type.name }}
+                                            </label>
                                         {% endfor %}
-                                    </select>
+
+                                    </div>
                                 </div>
                                 <div class="form-group id_services_div">
                                     <label for="id_services">Please Select a Service</label>
-                                    <select name="services" required id="id_services"
-                                            class="form-control tagging ">
-                                        <option selected disabled>Select One Option</option>
 
-                                    </select>
+                                    <div class=" btn-group-toggle" data-toggle="buttons" id="id_services">
+
+                                    </div>
                                 </div>
+
                                 <div class="form-group add_on_div">
-                                    <label for="id_services">Would you like to add on any other service?</label>
-                                    <select name="add_on" multiple="multiple" id="id_add_services"
-                                            class="form-control tagging ">
-                                        {% for service in add_ons %}
-                                            <option value="{{ service.id }}"
-                                                    data-price="{{ service.price }}"
-                                                    data-description="{{ service.description }}"
-                                                    data-time="{{ service.time }}"
-                                                    data-name="{{ service.name }}">{{ service.name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label for="id_add_services">Would you like to add on any other service?</label>
+                                    <br>
 
+                                    <div class=" btn-group-toggle" data-toggle="buttons" id="id_add_services">
+                                        {% for service in add_ons %}
+                                            <label class="btn btn-outline-primary ">
+                                                <input type="checkbox" class="add_ons_service" name="add_on"
+                                                       value="{{ service.id }}"
+                                                       data-name="{{ service.name }}"
+                                                       data-description="{{ service.description }}"
+                                                       data-price="{{ service.price }}"
+                                                       data-time="{{ service.time }}"
+                                                       autocomplete="off"> {{ service.name }}
+                                            </label>
+                                        {% endfor %}
+
+                                    </div>
                                 </div>
+                                <br>
                                 <table class="table table-bordered" style="margin-bottom: 0;">
                                     <thead>
                                     <tr class="text-center row">
@@ -280,7 +297,11 @@
     <script src="{% static 'plugins/flatpickr/flatpickr.js' %}"></script>
     <script src="https://unpkg.com/fullcalendar@5.1.0/main.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
-
+    <script>
+        $('label > input[type=checkbox]').on('change', function () {
+            console.log($(this).is(':checked'));
+        })
+    </script>
 
     <script type="text/javascript">
 
@@ -377,9 +398,9 @@
 
 
                     var totalminutes = 0;
-                    var selectDuration = $('#id_services :selected').data().time;
+                    var selectDuration = $('#id_services input:checked').data().time;
                     totalminutes = totalminutes + selectDuration;
-                    var add_on_duration = $('#id_add_services :selected');
+                    var add_on_duration = $('#id_add_services input:checked');
                     if (add_on_duration) {
                         add_on_duration.each(function (index, value) {
                             let time_add_on = $(this).data().time;
@@ -448,7 +469,7 @@
 
                             let end = moment.tz(info.startStr, 'Australia/Sydney').add(totalminutes, 'minutes').toISOString();
                             calendar.addEvent({
-                                title: $('#id_services :selected').data().name,
+                                title: $('#id_services input:checked').data().name,
                                 start: info.startStr,
                                 end: moment(info.start).add(totalminutes, 'minutes').toISOString(),
                             });
@@ -472,50 +493,15 @@
     <script>
         $(".add_on_div").hide();
         $(".id_services_div").hide();
-        $("#id_services").select2({});
-        $('#id_service_types').select2({});
+
+
         $('#id_staff').empty();
-        $("#id_add_services").select2({
-            multiple: true,
-        });
+
         var serviceWrapper = $('#servicewrapper');
         $('#id_services').on('select2:select', function (e) {
-            var check = e.params.data.id;
-            let elemnt = $('#id_services option[value="' + check + '"]').data();
 
-            let existing = $('.main-service-tr');
-            if (existing.length) {
-                let amount = $('.main-service-tr  #rswala').text();
-                $('.main-service-tr').remove();
-                val = parseInt($('#total').html()) - parseInt(amount)
-
-                $('#total').html(val);
-                $('#dbtotal').val(val);
-
-                var table = document.getElementsByTagName('tbody')[0],
-                    rows = table.getElementsByTagName('tr'),
-                    text = 'textContent' in document ? 'textContent' : 'innerText';
-                for (var i = 0, len = rows.length; i < len; i++) {
-                    rows[i].children[0][text] = i + 1;
-                }
-
-            }
-
-            $(serviceWrapper).append('<tr id="' + check + '" class="counter row main-service-tr"><td class="col-2"></td><td class="col-2 text-center"><span class="badge badge-success">Service</span></td><td class="col-3" id="type">' + elemnt.name + '</td><td class="col-4">' + elemnt.description + '</td><td class="col-1" id="rswala">' + elemnt.price + '</td></tr>'); //add
-
-            var table = document.getElementsByTagName('tbody')[0],
-                rows = table.getElementsByTagName('tr'),
-                text = 'textContent' in document ? 'textContent' : 'innerText';
-
-            for (var i = 0, len = rows.length; i < len; i++) {
-                rows[i].children[0][text] = i + 1;
-            }
-            val = parseInt(elemnt.price) + parseInt($('#total').html());
-
-            $('#total').html(val);
-            $('#dbtotal').val(val);
-            $(".add_on_div").show();
         });
+
         $('#id_add_services').on('select2:select', function (e) {
             var check = e.params.data.id;
 
@@ -582,8 +568,9 @@
                 }
             })
         });
-        $('#id_service_types').change(function () {
+        $('.id_service_types_input').click(function () {
             $('#servicewrapper').empty();
+            $('#id_services').empty();
             $('#total').html(0);
             let pk = $(this).val();
             request_url = '/services/' + pk + '/ajax/getServices';
@@ -591,12 +578,12 @@
                 url: request_url,
                 success: function (data) {
 
-                    $('#id_services').html('<option selected="' + "selected" + '">' + '' + '</option>');
                     if (!data.service.length) {
                         alert('Unable to Find any Service Related to this Category');
                     }
                     $.each(data.service, function (index, value) {
-                        $('#id_services').append('<option value="' + value.id + '"  data-price="' + value.price + '" data-description="' + value.description + '"data-time="' + value.time + '" data-name="' + value.name + '" >' + value.name + '</option>');
+                        $('#id_services').append('<label class="btn btn-outline-primary services-btn ml-2"><input type="radio" class="services" data-price="' + value.price + '" data-description="' + value.description + '" data-time="' + value.time + '" data-name="' + value.name + '"  name="services" value="' + value.id + '" autocomplete="off"> ' + value.name + '</label>')
+
                     });
                     $('.id_services_div').show();
 
@@ -605,7 +592,86 @@
                     alert(e);
                 }
             })
-        })
+        });
+
+
+        $(document).ready(function () {
+            $(document).on('click', '.services-btn', function () {
+                $('.services-btn').find('input').removeAttr('checked');
+                $(this).find('input').attr('checked', true);
+
+                let elemnt = $(this).find('input').data();
+                let existing = $('.main-service-tr');
+                if (existing.length) {
+                    let amount = $('.main-service-tr  #rswala').text();
+                    $('.main-service-tr').remove();
+                    val = parseInt($('#total').html()) - parseInt(amount)
+
+                    $('#total').html(val);
+                    $('#dbtotal').val(val);
+
+                    var table = document.getElementsByTagName('tbody')[0],
+                        rows = table.getElementsByTagName('tr'),
+                        text = 'textContent' in document ? 'textContent' : 'innerText';
+                    for (var i = 0, len = rows.length; i < len; i++) {
+                        rows[i].children[0][text] = i + 1;
+                    }
+
+                }
+
+                $(serviceWrapper).append('<tr id="' + $(this).find('input').val() + '" class="counter row main-service-tr"><td class="col-2"></td><td class="col-2 text-center"><span class="badge badge-success">Service</span></td><td class="col-3" id="type">' + elemnt.name + '</td><td class="col-4">' + elemnt.description + '</td><td class="col-1" id="rswala">' + elemnt.price + '</td></tr>'); //add
+
+                var table = document.getElementsByTagName('tbody')[0],
+                    rows = table.getElementsByTagName('tr'),
+                    text = 'textContent' in document ? 'textContent' : 'innerText';
+
+                for (var i = 0, len = rows.length; i < len; i++) {
+                    rows[i].children[0][text] = i + 1;
+                }
+                val = parseInt(elemnt.price) + parseInt($('#total').html());
+
+                $('#total').html(val);
+                $('#dbtotal').val(val);
+                $(".add_on_div").show();
+            });
+
+        });
+        $('.add_ons_service').click(function (evt) {
+
+            let condition_add = $(this).prop('checked');
+            var elemnt = $(this).data();
+
+            if (condition_add) {
+                $(serviceWrapper).append('<tr id="add_on' + $(this).val() + '" class="counter row"><td class="col-2"></td><td class="col-2 text-center"><span class="badge badge-info">Add On</span></td><td class="col-3" id="type">' + elemnt.name + '</td><td class="col-4">' + elemnt.description + '</td><td class="col-1" id="rswala">' + elemnt.price + '</td></tr>'); //add
+                var table = document.getElementsByTagName('tbody')[0],
+                    rows = table.getElementsByTagName('tr'),
+                    text = 'textContent' in document ? 'textContent' : 'innerText';
+
+                for (var i = 0, len = rows.length; i < len; i++) {
+                    rows[i].children[0][text] = i + 1;
+                }
+
+                let newval = parseInt(elemnt.price) + parseInt($('#total').html());
+
+                $('#total').html(newval);
+                $('#dbtotal').val(newval);
+            } else {
+
+                $('#add_on' + $(this).val()).remove();
+                let oldval = parseInt($('#total').html()) - parseInt(elemnt.price)
+
+                $('#total').html(oldval);
+                $('#dbtotal').val(oldval);
+
+                var table = document.getElementsByTagName('tbody')[0],
+                    rows = table.getElementsByTagName('tr'),
+                    text = 'textContent' in document ? 'textContent' : 'innerText';
+                for (var i = 0, len = rows.length; i < len; i++) {
+                    rows[i].children[0][text] = i + 1;
+                }
+            }
+
+        });
     </script>
 
     <script>
