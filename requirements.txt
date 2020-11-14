@@ -37,7 +37,6 @@ icalendar==4.0.4
 idna==2.9
 importlib-metadata==1.7.0
 kombu==4.6.11
-mysql-client==0.0.1
 numpy==1.19.1
 oauthlib==3.1.0
 Pillow==7.0.0
