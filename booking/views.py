@@ -13,9 +13,7 @@ import json
 from datetime import datetime, timedelta
 from django.utils import dateparse
 from django.shortcuts import redirect
-from django.conf import settings
-# Google Calendar Code IMport
-from core.mixins import SocialLoginRequiredMixin
+from django.utils.dateparse import parse_datetime
 from utils.credentials import get_calendar_service
 import datetime
 
@@ -116,9 +114,11 @@ def store_booking(request):
     service = Service.objects.get(id=request.POST['services'])
     addres = Address.objects.get(id=addr.id)
     updated_data = request.POST.copy()
-
-    updated_data.update({'start_time': dateparse.parse_datetime(request.POST['start_time']),
-                         'end_time': dateparse.parse_datetime(request.POST['end_time']), 'address': addres,
+    start_time = parse_datetime(request.POST['start_time'])
+    total_minutes = request.POST['total_minutes']
+    end_time = start_time + datetime.timedelta(minutes=int(total_minutes))
+    updated_data.update({'start_time': start_time,
+                         'end_time': end_time, 'address': addres,
                          'customer': customer, 'staff': staff, 'key_no': request.POST['key_no'],
                          'job_reference': request.POST['job_reference'], 'notes': request.POST['notes'],
                          'private_notes': request.POST['private_notes']})
@@ -249,7 +249,7 @@ def timeCalendar_json(request):
     date = datetime.date.today()
     next = request.GET.get('next', False)
     previous = request.GET.get('previous', False)
-    slot_duration = 45
+    slot_duration = int(request.GET.get('slot_duration', 15))
     if next or previous:
         if next:
 

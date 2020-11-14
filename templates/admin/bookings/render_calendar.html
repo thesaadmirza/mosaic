@@ -38,7 +38,7 @@
                     {% for slot in day.slots %}
                         <div class="col-md-12 btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-outline-primary slots-booking-btn mb-2"><input
-                                    type="radio" name="time_slot"
+                                    type="radio" name="start_time"
                                     class="services" value="{{ slot|date:"c" }}"
                                     autocomplete="off"> {{ slot|date:"h:i A" }}
                             </label>

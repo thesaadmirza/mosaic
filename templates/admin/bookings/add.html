@@ -213,15 +213,8 @@
                             </section>
                             <h3>Time</h3>
                             <section>
-                                <input type="hidden" name="start_time" id="start_time">
-                                <input type="hidden" name="end_time" id="end_time">
-                                <div class="statbox widget box box-shadow">
-                                    <div class="widget-content widget-content-area">
-
-                                        <div id="addCalendarBooking"></div>
-                                        <small class="
-                                         badge-warning">Grey Zone Is Disable Zone.</small>
-                                    </div>
+                                <input type="hidden" name="total_minutes" id="total_minutes">
+                                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing" id="fullcalendar">
                                 </div>
                             </section>
                             <h3>Preferences</h3>
@@ -303,25 +296,7 @@
         })
     </script>
 
-    <script type="text/javascript">
 
-        var django_events_old = [
-            {% for booking in events %}
-                {
-                    id: {{ booking.id }},
-                    title: "Booked",
-                    start: "{{ booking.start_time|date:"c"  }}",
-                    end: "{{ booking.end_time|date:"c"  }}",
-                    className: "bg-danger",
-                    lat: "{{ booking.address.lat }}",
-                    long: "{{ booking.address.long }}",
-                    address: "{{ booking.address.full_addreess }}",
-                    overlap: false,
-                },
-            {% endfor %}
-
-        ];
-    </script>
     <script>
 
         var hours = [
@@ -359,38 +334,6 @@
                         $(this).steps("previous");
                         return;
                     }
-                    $.each(django_events_old, function (index, value) {
-
-                        var from = new google.maps.LatLng(value.lat, value.long);
-                        var fromName = value.address;
-                        var dest = new google.maps.LatLng($('#id_lat').val(), $('#id_long').val());
-                        var destName = $('#id_address').val();
-
-                        var service = new google.maps.DistanceMatrixService();
-                        service.getDistanceMatrix(
-                            {
-                                origins: [from, fromName],
-                                destinations: [destName, dest],
-                                travelMode: 'DRIVING'
-                            }, callback);
-
-                        function callback(response, status) {
-
-                            if (status == 'OK') {
-                                $.each(response.rows, function (indexed, NValue) {
-                                    if (NValue.elements[0].status == "OK") {
-                                        console.log(NValue.elements[0].duration.value / 60 + 'minutes added, Travel Mode Driving');
-                                        value.end = moment(value.end).add(parseInt(NValue.elements[0].duration.value / 60), 'minutes').toISOString();
-                                        value.start = moment(value.start).subtract(parseInt(NValue.elements[0].duration.value / 60), 'minutes').toISOString();
-                                        return false;
-                                    }
-                                });
-
-                            }
-                        }
-
-                        django_events.push(value);
-                    });
 
 
                 }
@@ -414,72 +357,63 @@
                         return;
                         return false;
                     }
-                    console.log(django_events);
-                    var calendarEl = document.getElementById('addCalendarBooking');
-                    var calendar = new FullCalendar.Calendar(calendarEl, {
-
-                        selectable: true,
-                        themeSystem: 'bootstrap4',
-                        initialView: 'timeGridWeek',
-                        eventOverlap: false,
-                        slotEventOverlap: false,
-
-                        slotDuration: '00:15:00',
-                        slotLabelInterval: '00:15:00',
-                        eventLimit: 1,
-                        headerToolbar: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'timeGridWeek,timeGridDay'
+                    $('#total_minutes').val(totalminutes);
+                    request_url = '/booking/get_slots_json/?slot_duration=' + totalminutes;
+                    $.ajax({
+                        url: request_url,
+                        success: function (data) {
+                            $('#fullcalendar').empty();
+                            $('#fullcalendar').html(data);
                         },
-                        events: django_events,
-                        businessHours: hours,
-                        selectOverlap: false,
-                        selectConstraint: "businessHours",
-                        select: function (info) {
-                            console.log(totalminutes, "Checking Here from now");
-                            const infomstart = info.start
-                            const infomend = moment(info.start).add(totalminutes, 'minutes');
-                            const range1 = moment.range(infomstart, infomend);
-                            let mstart;
-                            let mend;
-                            let range2;
-                            for (i = 0; i < django_events.length; i++) {
-                                mstart = moment(django_events[i].start);
-                                mend = moment(django_events[i].end);
-                                range2 = moment.range(mstart, mend);
-                                if (mstart >= infomstart && mstart <= infomend) {
-                                    alert("Sorry, this is overlapping with existing events");
-                                    return;
-                                }
-                                if (mend >= infomstart && mend <= infomend) {
-                                    alert("Sorry, this is overlapping with existing events");
-                                    return;
-                                }
-                                if (mstart.within(range1) || mend.within(range1)) {
-                                    alert("Sorry, This Slot is overlapping with Existing Booking. You need " + totalminutes + " Minutes for this Service")
-                                }
-
-                            }
-                            let eventsin = calendar.getEvents();
-
-                            if (calendar.getEvents().length > django_events.length) {
-                                eventsin[django_events.length].remove();
-                            }
-
-                            let end = moment.tz(info.startStr, 'Australia/Sydney').add(totalminutes, 'minutes').toISOString();
-                            calendar.addEvent({
-                                title: $('#id_services input:checked').data().name,
-                                start: info.startStr,
-                                end: moment(info.start).add(totalminutes, 'minutes').toISOString(),
-                            });
-                            $('#start_time').val(info.startStr);
-                            let localFormat = 'YYYY-MM-DD[T]HH:mm:ss';
-                            $('#end_time').val(moment(info.start).add(totalminutes, 'minutes').format(localFormat))
-
+                        errors: function (e) {
+                            alert(e);
                         }
-                    });
-                    calendar.render();
+                    })
+                    $(document).on('click', '#next', function () {
+
+                        let next = $(this).data().next;
+
+                        request_url = '/booking/get_slots_json/?next=' + next + '&slot_duration=' + totalminutes;
+                        $.ajax({
+                            url: request_url,
+                            success: function (data) {
+                                $('#fullcalendar').empty();
+                                $('#fullcalendar').html(data);
+                            },
+                            errors: function (e) {
+                                alert(e);
+                            }
+                        })
+                    })
+                    $(document).on('click', '#previous', function () {
+                        let previous = $(this).data().previous;
+                        console.log(previous);
+                        request_url = '/booking/get_slots_json/?previous=' + previous + '&slot_duration=' + totalminutes;
+                        $.ajax({
+                            url: request_url,
+                            success: function (data) {
+                                $('#fullcalendar').empty();
+                                $('#fullcalendar').html(data);
+                            },
+                            errors: function (e) {
+                                alert(e);
+                            }
+                        })
+                    })
+                    $(document).on('click', '.slots-booking-btn', function () {
+                        $('.slots-booking-btn.active').not(this).removeClass('active');
+                        let siblings = $(this).parent().nextAll();
+                        let first = $(this).val();
+                        first = moment(first);
+                        console.log(first);
+                        $.each(siblings, function (index, value) {
+                            if (first > $(value).find('input[name="start_time"]').val()) {
+
+                            }
+                        })
+                        console.log(siblings.length)
+
+                    })
                 }
 
             },
