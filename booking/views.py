@@ -6,6 +6,8 @@ from booking.forms import BookingForm, AddressForm
 from django.urls import reverse_lazy
 from users.models import Customer, Staff
 from django.shortcuts import render, HttpResponse
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime, timedelta
@@ -162,3 +164,120 @@ def store_booking(request):
         print("error", booking)
 
     return redirect('/booking')
+
+
+def time_in_range(start, end, x):
+    """Return true if x is in the range [start, end]"""
+    if x >= start and x <= end:
+        return True
+    else:
+        return False
+
+
+def createSlots(startTime, endTime, date, slot_duration):
+    slots = []
+    t = datetime.datetime.combine(date, startTime)
+    endTime = datetime.datetime.combine(date, endTime)
+    slots.append(t)
+    while t <= endTime:
+        t = t + datetime.timedelta(minutes=slot_duration)
+        if t <= endTime:
+            slots.append(t)
+    return slots
+
+
+def getSlots(hours, date, slot_duration):
+    slots = []
+    for hour in hours:
+        createdSlots = createSlots(hour.from_hour, hour.to_hour, date, slot_duration)
+        slots = slots + createdSlots
+    slots = list(dict.fromkeys(slots))
+    slots.sort(reverse=False)
+    bookings = Booking.objects.filter(start_time__date=date).values('start_time', 'end_time').all()
+    for book in bookings:
+
+        result = [i for i in slots if i >= book['start_time'] and i <= book['end_time']]
+        if result:
+            slots = list(set(slots) - set(result))
+
+    slots.sort(reverse=False)
+    return slots
+
+
+def timeCalendar(request):
+    import datetime
+    date = datetime.date.today()
+    next = request.GET.get('next', False)
+    previous = request.GET.get('previous', False)
+    slot_duration = 45
+    if next or previous:
+        if next:
+
+            start_week = datetime.datetime.strptime(next, "%Y-%m-%d").date()
+        else:
+
+            start_week = datetime.datetime.strptime(previous, "%Y-%m-%d").date()
+    else:
+        start_week = date - datetime.timedelta(date.weekday())
+    start_week = date - datetime.timedelta(date.weekday())
+    weekdays = date.weekday()
+    days = []
+    days.append(start_week)
+    previous = start_week - datetime.timedelta(6)
+    next = start_week + datetime.timedelta(7)
+    for i in range(1, 7):
+        days.append(start_week + datetime.timedelta(i))
+    newdays = []
+    for index, value in enumerate(days):
+        data = {}
+        data['day'] = value
+        weekday = value.weekday() + 1
+        if date <= value:
+
+            hours = BusinessHours.objects.filter(weekday=weekday).all()
+            data['slots'] = getSlots(hours, value, slot_duration)
+        else:
+            data['slots'] = []
+        newdays.append(data)
+
+    return render(request, 'admin/bookings/timeCalendar.html',
+                  context={'days': newdays, 'today': date, 'previous': previous, 'next': next})
+
+
+def timeCalendar_json(request):
+    import datetime
+    date = datetime.date.today()
+    next = request.GET.get('next', False)
+    previous = request.GET.get('previous', False)
+    slot_duration = 45
+    if next or previous:
+        if next:
+
+            start_week = datetime.datetime.strptime(next, "%Y-%m-%d").date()
+        else:
+
+            start_week = datetime.datetime.strptime(previous, "%Y-%m-%d").date()
+    else:
+        start_week = date - datetime.timedelta(date.weekday())
+    weekdays = date.weekday()
+    days = []
+    days.append(start_week)
+    previous = start_week - datetime.timedelta(6)
+    next = start_week + datetime.timedelta(7)
+    for i in range(1, 7):
+        days.append(start_week + datetime.timedelta(i))
+    newdays = []
+    for index, value in enumerate(days):
+        data = {}
+        data['day'] = value
+        weekday = value.weekday() + 1
+        if date <= value:
+            hours = BusinessHours.objects.filter(weekday=weekday).all()
+            data['slots'] = getSlots(hours, value, slot_duration)
+        else:
+            data['slots'] = []
+        newdays.append(data)
+
+    converted_string = render_to_string('admin/bookings/render_calendar.html',
+                                        {'days': newdays, 'today': date, 'previous': previous, 'next': next})
+    return HttpResponse(converted_string)

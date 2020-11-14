@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+
+
+{% block page_css %}
+
+    <link href="{% static 'plugins/animate/animate.css' %}" rel="stylesheet" type="text/css"/>
+    <!--  END CUSTOM STYLE FILE  -->
+    <link href="{% static 'assets/css/components/custom-modal.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/jquery-step/jquery.steps.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/select2/select2.min.css' %}">
+    <style>
+        #formValidate .wizard > .content {
+            min-height: 25em;
+        }
+
+        #example-vertical.wizard > .content {
+            min-height: 24.5em;
+        }
+
+        table thead .row, table tbody .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+    </style>
+    <!-- BEGIN PAGE LEVEL STYLE -->
+
+
+    <link href="{% static 'plugins/flatpickr/flatpickr.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/flatpickr/custom-flatpickr.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/forms/theme-checkbox-radio.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- END PAGE LEVEL STYLE -->
+    <style>
+        .widget-content-area {
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .daterangepicker.dropdown-menu {
+            z-index: 1059;
+        }
+    </style>
+    <!-- Dropdowns Styles -->
+    <style>
+
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border-radius: 4px;
+            cursor: text;
+            border: 1px solid #bfc9d4;
+            color: #3b3f5c;
+            font-size: 15px;
+            padding: 0px 0px;
+            letter-spacing: 1px;
+            font-weight: 700;
+            background: #f1f2f3;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: white;
+
+            color: #007bff;
+            border-color: #007bff;
+            border-radius: 4px;
+            cursor: default;
+            float: left;
+            margin-right: 5px;
+            margin-top: 5px;
+            padding: 10px 9px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: bold;
+            margin-right: 2px;
+        }
+
+        input:checked {
+            display: block;
+            color: #fff;
+            background-color: #285e8e;
+        }
+    </style>
+    <!-- Dropdowns sytles end -->
+{% endblock %}
+
+
+<!-- Important for page rendering -->
+{% block page_class %}sidebar-noneoverflow{% endblock %}
+{% block page_title %}{% trans 'Timings' %}{% endblock %}
+{% block page_title_heading %}{% trans 'Timings' %}{% endblock %}
+<!-- ends here important tile and class -->
+
+
+<!-- Start Adding Content From Here -->
+{% block content %}
+    <form method="POST" id="booking_form" class="col-12" action="{% url 'booking:store' %}">
+        <div class="layout-px-spacing col-12">
+
+            <div class="row layout-top-spacing" id="cancel-row">
+                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing" id="fullcalendar">
+                    <div class="widget-content widget-content-area br-6">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="javascript:void(0)" id="previous" data-previous="{{ previous|date:"Y-m-d" }}">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                                         stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                         class="css-i6dzq1">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <h2 class="text-center" id="today">Today : {{ today }}</h2>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="javascript:void(0)" id="next" data-next="{{ next|date:"Y-m-d" }}"
+                                   class="float-right">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                                         stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                         class="css-i6dzq1">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="calendar_content">
+                            <br>
+                            <div class="row" id="days">
+                                {% for day in days %}
+                                    <div class="col-sm {% if day.day == today %}bg-primary p-2{% endif %}">
+                                        {{ day.day }} ({{ day.day|date:'l' }})
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <div class="row" id="slots">
+                                {% for day in days %}
+                                    <div class="col-sm row ">
+                                        {% for slot in day.slots %}
+                                            <div class="col-md-12 btn-group-toggle" data-toggle="buttons">
+                                                <label class="btn btn-outline-primary slots-booking-btn mb-2"><input
+                                                        type="radio" name="time_slot"
+                                                        class="services" value="{{ slot|date:"c" }}"
+                                                        autocomplete="off"> {{ slot|date:"h:i A" }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </form>
+{% endblock %}
+<!-- Main Content -->
+
+
+
+{% block page_js %}
+    <script src="{% static 'plugins/fullcalendar/moment.min.js' %}"></script>
+    <script>
+        request_url = '/booking/get_slots_json/';
+        $.ajax({
+            url: request_url,
+            success: function (data) {
+
+            },
+            errors: function (e) {
+                alert(e);
+            }
+        })
+        $(document).on('click', '#next', function () {
+
+            let next = $(this).data().next;
+
+            request_url = '/booking/get_slots_json/?next=' + next;
+            $.ajax({
+                url: request_url,
+                success: function (data) {
+                    $('#fullcalendar').empty();
+                    $('#fullcalendar').html(data);
+                },
+                errors: function (e) {
+                    alert(e);
+                }
+            })
+        })
+        $(document).on('click', '#previous', function () {
+            let previous = $(this).data().previous;
+            console.log(previous);
+            request_url = '/booking/get_slots_json/?previous=' + previous;
+            $.ajax({
+                url: request_url,
+                success: function (data) {
+                    $('#fullcalendar').empty();
+                    $('#fullcalendar').html(data);
+                },
+                errors: function (e) {
+                    alert(e);
+                }
+            })
+        })
+        $(document).on('click', '.slots-booking-btn', function () {
+            $('.slots-booking-btn.active').not(this).removeClass('active');
+            let siblings = $(this).parent().nextAll();
+            let first = $(this).val();
+            first = moment(first);
+            console.log(first);
+            $.each(siblings, function (index, value) {
+                if (first > $(value).find('input[name="time_slot"]').val()) {
+
+                }
+            })
+            console.log(siblings.length)
+
+        })
+    </script>
+{% endblock %}

@@ -14,7 +14,7 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 3.7 (venv) (2)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (venv) (4)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="demo9" />
   </component>

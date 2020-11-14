@@ -1,0 +1,53 @@
+<div class="widget-content widget-content-area br-6">
+    <div class="row">
+        <div class="col-md-3">
+            <a href="javascript:void(0)" id="previous" data-previous="{{ previous|date:"Y-m-d" }}">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                     stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                     class="css-i6dzq1">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-center" id="today">Today : {{ today }}</h2>
+        </div>
+        <div class="col-md-3">
+            <a href="javascript:void(0)" id="next" data-next="{{ next|date:"Y-m-d" }}" class="float-right">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                     stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                     class="css-i6dzq1">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div class="calendar_content">
+        <br>
+        <div class="row" id="days">
+            {% for day in days %}
+                <div class="col-sm {% if day.day == today %}bg-primary p-2{% endif %}">
+                    {{ day.day }} ({{ day.day|date:'l' }})
+                </div>
+            {% endfor %}
+        </div>
+        <br>
+        <div class="row" id="slots">
+            {% for day in days %}
+                <div class="col-sm row ">
+                    {% for slot in day.slots %}
+                        <div class="col-md-12 btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-primary slots-booking-btn mb-2"><input
+                                    type="radio" name="time_slot"
+                                    class="services" value="{{ slot|date:"c" }}"
+                                    autocomplete="off"> {{ slot|date:"h:i A" }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+</div>
