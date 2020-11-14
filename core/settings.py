@@ -166,7 +166,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 
 )
-
+GOOGLE_MAPS_API_KEY = 'AIzaSyADoLaI3Jlc2wVT-ISO-owBJvl3CSEjkCU'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -223,3 +223,6 @@ STATICFILES_DIRS = (
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 MEDIA_URL = '/media/'
+
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')

@@ -12,10 +12,14 @@ from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime, timedelta
 from django.utils import dateparse
+from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.dateparse import parse_datetime
 from utils.credentials import get_calendar_service
 import datetime
+import googlemaps
+
+gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
 
 # Ends Here Google Calendar
@@ -96,6 +100,11 @@ def booking_events_json(request):
 def store_booking(request):
     address = AddressForm(request.POST)
     addr = None
+    start_time = parse_datetime(request.POST['start_time'])
+    booked = Booking.objects.filter(start_time=start_time).count()
+    if booked:
+        print("Booking Already Exist at this slot")  # todo error message display
+        return redirect('/booking')
     if (address.is_valid()):
         customer = Customer.objects.get(id=request.POST['customer'])
         addr = Address.objects.create(street_name=request.POST['street_name'], country=request.POST['country'],
@@ -114,7 +123,7 @@ def store_booking(request):
     service = Service.objects.get(id=request.POST['services'])
     addres = Address.objects.get(id=addr.id)
     updated_data = request.POST.copy()
-    start_time = parse_datetime(request.POST['start_time'])
+
     total_minutes = request.POST['total_minutes']
     end_time = start_time + datetime.timedelta(minutes=int(total_minutes))
     updated_data.update({'start_time': start_time,
