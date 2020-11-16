@@ -189,8 +189,8 @@ def createSlots(startTime, endTime, date, slot_duration):
     endTime = datetime.datetime.combine(date, endTime)
     slots.append(t)
     while t <= endTime:
-        t = t + datetime.timedelta(minutes=slot_duration)
-        if t <= endTime:
+        t = t + datetime.timedelta(minutes=15)
+        if t <= endTime and t + datetime.timedelta(minutes=slot_duration) <= endTime:
             slots.append(t)
     return slots
 
@@ -204,8 +204,8 @@ def getSlots(hours, date, slot_duration):
     slots.sort(reverse=False)
     bookings = Booking.objects.filter(start_time__date=date).values('start_time', 'end_time').all()
     for book in bookings:
-
-        result = [i for i in slots if i >= book['start_time'] and i <= book['end_time']]
+        result = [i for i in slots if (i >= book['start_time'] and i <= book['end_time']) or (i + datetime.timedelta(
+            minutes=slot_duration) >= book['start_time'] and i <= book['start_time'])]
         if result:
             slots = list(set(slots) - set(result))
 
