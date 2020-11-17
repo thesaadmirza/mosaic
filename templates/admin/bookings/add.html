@@ -349,10 +349,12 @@
                         return false;
                     }
                     $('#total_minutes').val(totalminutes);
+                    let lat = $('#id_lat').val();
+                    let lang = $('#id_long').val();
                     if ($(document).find('#today').length) {
 
                     } else {
-                        request_url = '/booking/get_slots_json/?slot_duration=' + totalminutes;
+                        request_url = '/booking/get_slots_json/?slot_duration=' + totalminutes + '&lat=' + lat + '&lang=' + lang;
                         $.ajax({
                             url: request_url,
                             success: function (data) {
@@ -369,7 +371,7 @@
 
                         let next = $(this).data().next;
 
-                        request_url = '/booking/get_slots_json/?next=' + next + '&slot_duration=' + totalminutes;
+                        request_url = '/booking/get_slots_json/?next=' + next + '&slot_duration=' + totalminutes + '&lat=' + lat + '&lang=' + lang;
                         $.ajax({
                             url: request_url,
                             success: function (data) {
@@ -384,7 +386,7 @@
                     $(document).on('click', '#previous', function () {
                         let previous = $(this).data().previous;
                         console.log(previous);
-                        request_url = '/booking/get_slots_json/?previous=' + previous + '&slot_duration=' + totalminutes;
+                        request_url = '/booking/get_slots_json/?previous=' + previous + '&slot_duration=' + totalminutes + '&lat=' + lat + '&lang=' + lang;
                         $.ajax({
                             url: request_url,
                             success: function (data) {

@@ -195,15 +195,31 @@ def createSlots(startTime, endTime, date, slot_duration):
     return slots
 
 
-def getSlots(hours, date, slot_duration):
+def getSlots(hours, date, slot_duration, lat, lang):
     slots = []
     for hour in hours:
         createdSlots = createSlots(hour.from_hour, hour.to_hour, date, slot_duration)
         slots = slots + createdSlots
     slots = list(dict.fromkeys(slots))
     slots.sort(reverse=False)
-    bookings = Booking.objects.filter(start_time__date=date).values('start_time', 'end_time').all()
+    bookings = Booking.objects.filter(start_time__date=date).values('start_time', 'end_time', 'address__lat',
+                                                                    'address__long').all()
+    destination = (lat, lang)
     for book in bookings:
+        origin = (book['address__lat'], book['address__long'])
+        try:
+            gresult = gmaps.distance_matrix(origin, destination, mode='driving')
+            result_time = gresult["rows"][0]["elements"][0]["duration"]["value"]
+            result_time = result_time / 60
+            result_time = int(round(result_time))
+        except Exception as e:
+            result_time = 0
+            print(e)
+
+        start_time = book['start_time'] - datetime.timedelta(
+            minutes=int(result_time))
+        end_time = book['end_time'] + datetime.timedelta(
+            minutes=int(result_time))
         result = [i for i in slots if (i >= book['start_time'] and i <= book['end_time']) or (i + datetime.timedelta(
             minutes=slot_duration) >= book['start_time'] and i <= book['start_time'])]
         if result:
@@ -259,6 +275,8 @@ def timeCalendar_json(request):
     next = request.GET.get('next', False)
     previous = request.GET.get('previous', False)
     slot_duration = int(request.GET.get('slot_duration', 15))
+    lat = request.GET.get('lat', False)
+    lang = request.GET.get('lang', False)
     if next or previous:
         if next:
 
@@ -282,7 +300,7 @@ def timeCalendar_json(request):
         weekday = value.weekday() + 1
         if date <= value:
             hours = BusinessHours.objects.filter(weekday=weekday).all()
-            data['slots'] = getSlots(hours, value, slot_duration)
+            data['slots'] = getSlots(hours, value, slot_duration, lat, lang)
         else:
             data['slots'] = []
         newdays.append(data)
