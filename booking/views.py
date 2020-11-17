@@ -5,6 +5,7 @@ from services.models import Service, ServiceType
 from booking.forms import BookingForm, AddressForm
 from django.urls import reverse_lazy
 from users.models import Customer, Staff
+from administrator.models import MOSAIC_SITE
 from django.shortcuts import render, HttpResponse
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -294,11 +295,12 @@ def timeCalendar_json(request):
     for i in range(1, 7):
         days.append(start_week + datetime.timedelta(i))
     newdays = []
+    MIN_BOOKING_HOURS = MOSAIC_SITE.objects.first().MIN_BOOKING_HOURS
     for index, value in enumerate(days):
         data = {}
         data['day'] = value
         weekday = value.weekday() + 1
-        if date <= value:
+        if date + datetime.timedelta(hours=MIN_BOOKING_HOURS) <= value:
             hours = BusinessHours.objects.filter(weekday=weekday).all()
             data['slots'] = getSlots(hours, value, slot_duration, lat, lang)
         else:

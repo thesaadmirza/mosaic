@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
+MIN_BOOKING_TIME = 12 # hours
 USE_TZ = False
 TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
