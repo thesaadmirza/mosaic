@@ -220,8 +220,8 @@ def getSlots(hours, date, slot_duration, lat, lang):
             minutes=int(result_time))
         end_time = book['end_time'] + datetime.timedelta(
             minutes=int(result_time))
-        result = [i for i in slots if (i >= book['start_time'] and i <= book['end_time']) or (i + datetime.timedelta(
-            minutes=slot_duration) >= book['start_time'] and i <= book['start_time'])]
+        result = [i for i in slots if (i >= start_time and i <= end_time) or (i + datetime.timedelta(
+            minutes=slot_duration) >= start_time and i <= start_time)]
         if result:
             slots = list(set(slots) - set(result))
 
