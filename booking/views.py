@@ -19,6 +19,7 @@ from django.utils.dateparse import parse_datetime
 from utils.credentials import get_calendar_service
 import datetime
 import googlemaps
+from users.models import Staff
 
 gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
@@ -65,7 +66,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView, FormView):
     def get_context_data(self, **kwargs):
         context = super(BookingCreateView, self).get_context_data(**kwargs)
         context['AddressForm'] = AddressForm()
-        context['events'] = Booking.objects.filter(start_time__gte=datetime.datetime.today() - timedelta(days=1)).all()
+
         context['service_types'] = ServiceType.objects.all()
         context['hours'] = BusinessHours.objects.all()
         context['services'] = Service.objects.filter(add_on=False)
@@ -78,6 +79,25 @@ class BookingsUpdate(LoginRequiredMixin, UpdateView):
     form_class = BookingForm
     success_url = reverse_lazy('booking:list')
     template_name = 'admin/bookings/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingsUpdate, self).get_context_data(**kwargs)
+        context['AddressForm'] = AddressForm()
+        context['main_services'] = Service.objects.filter(
+            type=self.object.service.filter(add_on=False).first().type, add_on=False).all()
+        context['staffs'] = Staff.objects.filter(
+            customer=self.object.customer).all()
+        context['total_minutes'] = (self.object.end_time - self.object.start_time).total_seconds() / 60.0
+        context['service_types'] = ServiceType.objects.all()
+        context['hours'] = BusinessHours.objects.all()
+        context['services'] = Service.objects.filter(add_on=False)
+        context['add_ons'] = Service.objects.filter(add_on=True)
+        return context
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        form.instance.user = self.request.user
+        return super(BookingsUpdate, self).form_valid(form)
 
 
 class BookingDelete(LoginRequiredMixin, DeleteView):
@@ -95,6 +115,47 @@ def booking_events_json(request):
     bookings = Booking.objects.values('name', 'start_time', 'end_time')
     data = list(bookings)
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+def update_booking(request, pk):
+    booking = Booking.objects.filter(id=pk).first()
+    selected_customer = request.POST.get('customer', booking.customer.id)
+    customer = Customer.objects.filter(id=selected_customer).first()
+    address = Address.objects.filter(id=booking.address.pk).first()
+    address_updated = Address.objects.filter(id=booking.address.pk).update(
+        street_name=request.POST.get('street_name', address.street_name),
+        country=request.POST.get('country', address.country),
+        suburb=request.POST.get('suburb', address.suburb), lat=request.POST.get('lat', address.lat),
+        long=request.POST.get('long', address.long),
+        customer=customer, details=request.POST.get('details', address.details),
+        state=request.POST.get('state', address.state),
+        postcode=request.POST.get('postcode', address.postcode),
+        full_addreess=request.POST.get('address_det', address.full_addreess))
+    booking.customer = customer
+    booking.staff = Staff.objects.get(id=request.POST.get('staff', booking.staff.id))
+    start_time = request.POST.get('start_time', False)
+    if start_time:
+        booking.start_time = parse_datetime(start_time)
+    else:
+        start_time = booking.start_time
+    total_minutes = request.POST['total_minutes']
+    booking.end_time = booking.start_time + datetime.timedelta(minutes=int(total_minutes))
+    booking.key_no = request.POST.get('key_no', booking.key_no)
+    booking.job_reference = request.POST.get('job_reference', booking.job_reference)
+    booking.notes = request.POST.get('notes', booking.notes)
+    booking.private_notes = request.POST.get('private_notes', booking.private_notes)
+    booking.save()
+
+    service = Service.objects.get(id=request.POST.get('services'))
+    if service:
+        booking.service.clear()
+        booking.service.add(service)
+        if (request.POST.getlist('add_on')):
+            for add in request.POST.getlist('add_on'):
+                service = Service.objects.get(id=add)
+                booking.service.add(service)
+        booking.save()
+    return redirect('/booking/edit/' + str(booking.id) + '/')
 
 
 @login_required
