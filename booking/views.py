@@ -295,7 +295,11 @@ def timeCalendar_json(request):
     for i in range(1, 7):
         days.append(start_week + datetime.timedelta(i))
     newdays = []
-    MIN_BOOKING_HOURS = MOSAIC_SITE.objects.first().MIN_BOOKING_HOURS
+    MIN_BOOKING_HOURS = MOSAIC_SITE.objects.first()
+    if MIN_BOOKING_HOURS:
+        MIN_BOOKING_HOURS = MIN_BOOKING_HOURS.MIN_BOOKING_HOURS
+    else:
+        MIN_BOOKING_HOURS = settings.MIN_BOOKING_HOURS
     for index, value in enumerate(days):
         data = {}
         data['day'] = value
