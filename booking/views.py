@@ -12,7 +12,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime, timedelta
-from django.utils import dateparse
+from django.urls import reverse
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.dateparse import parse_datetime
@@ -115,6 +115,26 @@ def booking_events_json(request):
     bookings = Booking.objects.values('name', 'start_time', 'end_time')
     data = list(bookings)
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+def booking_json_modal(request, pk):
+    booking = Booking.objects.filter(id=pk).first()
+    if booking:
+        data = {
+            'id': booking.id,
+            'address': booking.address.full_addreess,
+            'lat': booking.address.lat,
+            'long': booking.address.long,
+            'start_time': booking.start_time,
+            'end_time': booking.end_time,
+            'customer': booking.customer.company_name,
+            'staff': booking.staff.name,
+            'url': reverse('booking:update', kwargs={'pk': booking.id}),
+
+        }
+        return JsonResponse({'message': 'success', 'data': data}, status=200)
+    else:
+        return JsonResponse({'message': 'Not Found'}, status=400)
 
 
 def update_booking(request, pk):

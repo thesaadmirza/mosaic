@@ -63,7 +63,7 @@ $(document).ready(function () {
     btn.onclick = function () {
         modal.style.display = "block";
         addEvent.style.display = 'block';
-        editEvent.style.display = 'none';
+
         addEventTitle.style.display = 'block';
         editEventTitle.style.display = 'none';
         document.getElementsByTagName('body')[0].style.overflow = 'hidden';
@@ -156,16 +156,39 @@ $(document).ready(function () {
         eventClick: function (info) {
 
             addEvent.style.display = 'none';
-            editEvent.style.display = 'block';
+
 
             addEventTitle.style.display = 'none';
-            editEventTitle.style.display = 'block';
+
             modal.style.display = "block";
             document.getElementsByTagName('body')[0].style.overflow = 'hidden';
             createBackdropElement();
+            request_url = '/booking/get_booking_json/' + info.id + '/';
+            $.ajax({
+                url: request_url,
+                success: function (data) {
+                    if (data.message == "success") {
+                        $('#customer').val(data.data.customer);
+                        $('#staff').val(data.data.staff);
+                        $('#address').val(data.data.address);
+                        $('#booking_url').attr('href', data.data.url);
+                        $('#booking_title').text('Booking #' + data.data.id);
+                        console.log(data.data);
+                        let map;
+                        map = new google.maps.Map(document.getElementById("maphere"), {
+                            center: {lat: parseFloat(data.data.lat), lng: parseFloat(data.data.long)},
+                            zoom: 13,
+                        });
 
+                    }
+                },
+                errors: function (e) {
+                    alert(e);
+                }
+            })
             // Calendar Event Featch
             var eventTitle = info.title;
+
             var eventDescription = info.description;
 
             // Task Modal Input
@@ -202,25 +225,7 @@ $(document).ready(function () {
                 minDate: info.start.format("YYYY-MM-DD HH:mm:ss")
             });
 
-            $('#edit-event').off('click').on('click', function (event) {
-                event.preventDefault();
-                /* Act on the event */
-                var radioValue = $("input[name='marker']:checked").val();
 
-                var taskStartTimeValue = document.getElementById("start-date").value;
-                var taskEndTimeValue = document.getElementById("end-date").value;
-
-                info.title = taskTitle.val();
-                info.description = taskDescription.val();
-                info.start = taskStartTimeValue;
-                info.end = taskEndTimeValue;
-                info.className = radioValue;
-
-                $('#calendar').fullCalendar('updateEvent', info);
-                modal.style.display = "none";
-                modalResetData();
-                document.getElementsByTagName('body')[0].removeAttribute('style');
-            });
         }
     })
 

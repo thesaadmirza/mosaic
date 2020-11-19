@@ -13,6 +13,7 @@ urlpatterns = [
     path('store/', views.store_booking, name="store"),
     path('update/<int:pk>/', views.update_booking, name="custom_update"),
     path('get_events_json/', views.booking_events_json, name="get_events_json"),
+    path('get_booking_json/<int:pk>/', views.booking_json_modal, name="get_booking_json"),
     path('time_calendar/', views.timeCalendar, name="time_calendar"),
     path('get_slots_json/', views.timeCalendar_json, name="slots_json"),
 ]
