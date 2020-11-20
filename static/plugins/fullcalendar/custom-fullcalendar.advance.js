@@ -173,7 +173,15 @@ $(document).ready(function () {
                         $('#address').val(data.data.address);
                         $('#booking_url').attr('href', data.data.url);
                         $('#booking_title').text('Booking #' + data.data.id);
-                        console.log(data.data);
+                        let total = 0;
+                        let total_services = '';
+                        $.each(data.data.services, function (data, value) {
+                            total_services += '<h6>' + value.type + ' - ' + value.name + ' , Minutes ' + value.time + '   Price : ' + value.price + '</h6>';
+                            total = total + value.price;
+                        });
+                        total_services += '<p>Total : ' + total + '</p>';
+                        $('#services').html(total_services);
+
                         let map;
                         map = new google.maps.Map(document.getElementById("maphere"), {
                             center: {lat: parseFloat(data.data.lat), lng: parseFloat(data.data.long)},

@@ -120,12 +120,23 @@ def booking_events_json(request):
 def booking_json_modal(request, pk):
     booking = Booking.objects.filter(id=pk).first()
     if booking:
+        services = booking.service.all()
+        services_all = []
+        for service in services:
+            service_obj = {
+                'type': service.type.name,
+                'name': service.name,
+                'price': service.price,
+                'time': service.time,
+            }
+            services_all.append(service_obj)
         data = {
             'id': booking.id,
             'address': booking.address.full_addreess,
             'lat': booking.address.lat,
             'long': booking.address.long,
             'start_time': booking.start_time,
+            'services': services_all,
             'end_time': booking.end_time,
             'customer': booking.customer.company_name,
             'staff': booking.staff.name,
