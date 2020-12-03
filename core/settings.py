@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
-MIN_BOOKING_TIME = 12 # hours
+MIN_BOOKING_TIME = 12  # hours
 USE_TZ = False
 TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
@@ -223,6 +223,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
+PROJECT_ROOT = os.path.join(MEDIA_ROOT, 'projects')
 MEDIA_URL = '/media/'
 
 GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')

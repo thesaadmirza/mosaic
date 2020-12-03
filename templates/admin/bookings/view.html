@@ -1,44 +1,291 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load file_manager %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_field %}
 
 
 {% block page_css %}
+    <style>
+        .layout-spacing svg {
+            height: 65px;
+            width: 65px;
+        }
 
+        .layout-spacing .jumbotron-fluid :hover {
+            color: blue;
+        }
+
+    </style>
+    <link href="{% static 'assets/css/elements/breadcrumb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'plugins/notification/snackbar/snackbar.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/scrollspyNav.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'plugins/file-upload/file-upload-with-preview.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 
 <!-- Important for page rendering -->
 {% block page_class %}sidebar-noneoverflow{% endblock %}
-{% block page_title %}{{ object.name }}{% endblock %}
-{% block page_title_heading %}{{ object.name }}{% endblock %}
+{% block page_title %}{{ object.id }} - Project{% endblock %}
+{% block page_title_heading %}{{ object.id }} - Project{% endblock %}
 <!-- ends here important tile and class -->
 
 
 <!-- Start Adding Content From Here -->
 {% block content %}
     <div class="layout-px-spacing col-12">
-        <div class="row layout-top-spacing" id="cancel-row">
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <h3>Name : {{ object.name }}</h3>
-                    <p>Description : {{ object.description }}</p>
-                    <p>Price : <b>{{ object.price }}</b></p>
-                    <p>Minutes : <b>{{ object.time }}</b></p>
+        <div class="row layout-top-spacing ml-2" id="filemangaer-section">
+            <div class="col-md-12 row">
+                <div class="col-md-6">
+                    <nav class="breadcrumb-two mb-4" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item "><a href="javascript:void(0);">Home</a></li>
+                            <li class="breadcrumb-item active pl-3" aria-current="page" data-path="{{ current_path }}">
+                                <a
+                                        href="javascript:void(0);">  {{ object.id }} -
+                                    Project</a></li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
-
         </div>
 
     </div>
+
+    <!-- Modal to Creat new Folder in Current Directory -->
+    <div class="modal fade" id="addListModal" tabindex="-1" role="dialog" aria-labelledby="addListModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fileUploadModalLabel">Create New Folder</h5>
+
+                </div>
+                <div class="modal-body">
+                    <div class="compose-box">
+                        <div class="compose-content" id="addListModalTitle">
+
+
+                            <form action="javascript:void(0);" method="POST" id="folder_creation_form">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="list-title">
+                                            <input id="foldername-input" required type="text" name="folder"
+                                                   placeholder="New Folder Name"
+                                                   class="form-control" name="task">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                    <button type="button" class="btn btn-primary" id="create_folder_submit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal to create new folder ends here -->
+    <!-- Modal to Creat new Folder in Current Directory -->
+    <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fileUploadModalLabel">Upload Files</h5>
+
+                </div>
+                <form id="files-upload-form" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+
+                        {% csrf_token %}
+                        <div class="custom-file-container" data-upload-id="mySecondImage">
+                            <label>Upload (Allow Multiple) <a href="javascript:void(0)"
+                                                              class="custom-file-container__image-clear"
+                                                              title="Clear Image">x</a></label>
+                            <label class="custom-file-container__custom-file">
+                                <input type="file" name="files" required accept="*"
+                                       class="custom-file-container__custom-file__custom-file-input"
+                                       multiple>
+
+                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+                            </label>
+                            <div class="custom-file-container__image-preview"></div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                        <button type="submit" class="btn btn-primary" id="upload-btn-files">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal to create new folder ends here -->
 {% endblock %}
 <!-- Main Content -->
 
 
 
 {% block page_js %}
+    <script>
+        $("#add_new_folder").off('click').on('click', function (event) {
+            event.preventDefault();
+            $('#addListModal').modal('show');
+        });
+    </script>
+    <script>
+        request_url = '/booking/get_filemanager_content/' +{{ object.id }};
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: request_url,
+            data: [{name: 'path', value: $(document).find('ol.breadcrumb').find('li.active').data('path')}],
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#filemangaer-section').empty();
+                $('#filemangaer-section').html(data);
+            },
+            errors: function (e) {
+                alert('Whoops, Somthing Happend. Please Refresh the Page.');
+            }
+        })
 
+        function get_filemanager_content() {
+            request_url = '/booking/get_filemanager_content/' +{{ object.id }};
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: request_url,
+                data: [{
+                    name: 'path',
+                    value: $(document).find('ol.breadcrumb').find('li.active').data('path')
+                }],
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                type: 'POST',
+                success: function (data) {
+                    $('#filemangaer-section').empty();
+                    $('#filemangaer-section').html(data);
+                },
+                errors: function (e) {
+                    alert('Whoops, Somthing Happend. Please Refresh the Page.');
+                }
+            })
+        }
+    </script>
+
+    <script src="{% static 'assets/js/scrollspyNav.js' %}"></script>
+    <script src="{% static 'plugins/file-upload/file-upload-with-preview.min.js' %}"></script>
+    <script src="{% static 'plugins/notification/snackbar/snackbar.min.js' %}"></script>
+
+    <script>
+        //Second upload
+        var secondUpload = new FileUploadWithPreview('mySecondImage')
+    </script>
+    <script>
+        $(document).on('click', '#folder-open', function (event) {
+            console.log(this, event);
+            let path = $(this).attr('data-path');
+            path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+            $(document).find('ol.breadcrumb').find('li.active').removeClass('active');
+            let result = $(document).find('ol.breadcrumb').append('<li class="breadcrumb-item active pl-3" aria-current="page" data-path="' + path + '"><a href="javascript:void(0);"></a></li>');
+
+            get_filemanager_content();
+        });
+        $(document).on('click', 'ol li.breadcrumb-item', function (event) {
+            let folderName = $(this).attr('data-path');
+            $(this).next().remove();
+            $(this).addClass('active');
+            get_filemanager_content();
+        });
+        $(document).on('click', '#create_folder_submit', function () {
+            let formData = $('#folder_creation_form').serializeArray();
+
+            if (!formData[0].value) {
+                alert("Please Enter Folder Name");
+                return;
+            }
+            formData[formData.length] = {
+                name: 'path',
+                value: $(document).find('ol.breadcrumb').find('li.active').data('path')
+            };
+            request_url = '/booking/create_folder/';
+            $.ajax({
+                url: request_url,
+                data: formData,
+                type: "POST",
+                success: function (data) {
+                    if (data.message == "success") {
+                        $('#addListModal').modal('toggle');
+                        get_filemanager_content();
+                        Snackbar.show({
+                            text: 'Successfully Created.',
+                            pos: 'top-center',
+                            duration: 3000,
+                        });
+                        $('#folder_creation_form')[0].reset();
+                    } else {
+                        alert(data.data);
+                    }
+                },
+                error: function (e) {
+
+                    Snackbar.show({
+                        text: e.responseJSON.data,
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                }
+            })
+        })
+        $(document).on('submit', '#files-upload-form', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            formData.append('path', $(document).find('ol.breadcrumb').find('li.active').data('path'));
+
+            request_url = '/booking/upload_files_manager/';
+            $.ajax({
+                url: request_url,
+                data: formData,
+                crossDomain: true,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+
+                type: "POST",
+                success: function (data) {
+                    if (data.message == "success") {
+                        $('#fileUploadModal').modal('toggle');
+                        get_filemanager_content();
+                        Snackbar.show({
+                            text: 'Successfully Uploaded.',
+                            pos: 'top-center',
+                            duration: 3000,
+                        });
+                        $('.custom-file-container__image-preview').empty();
+                        $('.custom-file-container__custom-file__custom-file-control').html('Choose file...<span class="custom-file-container__custom-file__custom-file-control__button"> Browse </span>');
+                        $('#files-upload-form')[0].reset();
+                    } else {
+                        Snackbar.show({
+                            text: 'Whoopx, Somthing Happened.',
+                            pos: 'top-center',
+                            duration: 3000,
+                        });
+                    }
+                },
+                error: function (e) {
+                    alert(e.responseJSON.data);
+                }
+            })
+        })
+    </script>
 
 {% endblock %}
