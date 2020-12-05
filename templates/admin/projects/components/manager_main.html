@@ -1,0 +1,131 @@
+<div class="layout-px-spacing col-12">
+    <div class="row layout-top-spacing ml-2" id="filemangaer-section">
+        <div class="col-md-12 row">
+            <div class="col-md-6">
+                <nav class="breadcrumb-two mb-4" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item "><a href="javascript:void(0);">Home</a></li>
+                        <li class="breadcrumb-item active pl-3" aria-current="page" data-path="{{ current_path }}">
+                            <a
+                                    href="javascript:void(0);">  {{ object.id }} -
+                                Project</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal to Creat new Folder in Current Directory -->
+<div class="modal fade" id="addListModal" tabindex="-1" role="dialog" aria-labelledby="addListModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">Create New Folder</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="compose-box">
+                    <div class="compose-content" id="addListModalTitle">
+
+
+                        <form action="javascript:void(0);" method="POST" id="folder_creation_form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="list-title">
+                                        <input id="foldername-input" required type="text" name="folder"
+                                               placeholder="New Folder Name"
+                                               class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                <button type="button" class="btn btn-primary" id="create_folder_submit">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal to Ren Folder and Files in Current Directory -->
+<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">Rename</h5>
+            </div>
+            <form method="POST" id="renameForm">
+                <div class="modal-body">
+                    <div class="compose-box">
+                        <div class="compose-content" id="renameModalTitle">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="list-title">
+                                        <input id="folderNewName-input" required type="text" name="name"
+                                               placeholder="New Name"
+                                               class="form-control">
+                                        <input type="hidden" name="path" id="rename_path">
+                                        <input type="hidden" name="type" id="rename_type">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                    <button type="submit" class="btn btn-primary" id="rename_submit">Rename</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal to create new folder ends here -->
+<!-- Modal to Creat new Folder in Current Directory -->
+<div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">Upload Files</h5>
+
+            </div>
+            <form id="files-upload-form" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="custom-file-container" data-upload-id="mySecondImage">
+                        <label>Upload (Allow Multiple) <a href="javascript:void(0)"
+                                                          class="custom-file-container__image-clear"
+                                                          title="Clear Image">x</a></label>
+                        <label class="custom-file-container__custom-file">
+                            <input type="file" name="files" required accept="*"
+                                   class="custom-file-container__custom-file__custom-file-input"
+                                   multiple>
+
+                            <span class="custom-file-container__custom-file__custom-file-control"></span>
+                        </label>
+                        <div class="custom-file-container__image-preview"></div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                    <button type="submit" class="btn btn-primary" id="upload-btn-files">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal to create new folder ends here -->
+
+

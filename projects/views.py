@@ -33,6 +33,21 @@ class BookingView(LoginRequiredMixin, DetailView):
         return context
 
 
+def projectsview(request):
+    project_dir = settings.PROJECT_ROOT
+    current_path = project_dir
+    folders = create_brudcrumbs(project_dir)
+    try:
+        dir_exist = fsutil.assert_exists(project_dir)
+        dirs = fsutil.list_dirs(project_dir)
+        files = fsutil.list_files(project_dir)
+    except Exception as e:
+        dirs = []
+        files = []
+    return render(request, 'admin/projects/admin_filemanager.html',
+                  {'current_path': current_path, 'dirs': dirs, 'files': files})
+
+
 def testingdir(request, **kwargs):
     dirs = fsutil.list_dirs(settings.PROJECT_ROOT)
     files = fsutil.list_files(settings.PROJECT_ROOT)
@@ -59,6 +74,42 @@ def folder_create(request):
         return JsonResponse({'message': 'failure', 'data': 'Please Enter Valid Name'}, status=403)
 
 
+def rename_folder_file(request):
+    name = request.POST.get('name', False)
+    path = request.POST.get('path', False)
+    if name and path:
+        try:
+            fulpath = request.POST.get('fullPath', False)
+            path = fulpath + '/' + path
+            type = request.POST.get('type', False)
+            if type == "folder":
+                fsutil.rename_dir(path, name)
+            else:
+                fsutil.rename_file_basename(path, name)
+            return JsonResponse({'message': 'success', 'data': path}, status=200)
+        except Exception as e:
+            return JsonResponse({'message': 'failure', 'data': 'Unable to Rename the. Try Again After Refresh.'},
+                                status=403)
+    else:
+        return JsonResponse({'message': 'failure', 'data': 'Please Enter Valid Name'}, status=403)
+
+
+def delete_folder(request):
+    path = request.POST.get('path', False)
+    if path:
+        try:
+            type = request.POST.get('type', False)
+            if type == "folder":
+                fsutil.delete_dir(path)
+            else:
+                fsutil.delete_file(path)
+            return JsonResponse({'message': 'success', 'data': path}, status=200)
+        except Exception as e:
+            return JsonResponse({'message': 'failure', 'data': 'Unable to Delete Folder, Not Found.'}, status=403)
+    else:
+        return JsonResponse({'message': 'failure', 'data': 'Whoopx, Something Went Wrong'}, status=403)
+
+
 def filemanager_content(request, pk):
     path = request.POST.get('path', False)
     project = str(pk)
@@ -81,14 +132,38 @@ def filemanager_content(request, pk):
     return HttpResponse(converted_string)
 
 
-def create_brudcrumbs(path, project_id):
+def filemanager_content_admin(request):
+    path = request.POST.get('path', False)
+    if path:
+        current_path = settings.PROJECT_ROOT
+        folders = create_brudcrumbs(path)
+        try:
+            dir_exist = fsutil.assert_exists(path)
+            dir = fsutil.list_dirs(path)
+            files = fsutil.list_files(path)
+        except Exception as e:
+            dir = []
+            files = []
+    else:
+        current_path = path
+        dir = []
+        files = []
+    converted_string = render_to_string('admin/projects/filemanager.html',
+                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
+    return HttpResponse(converted_string)
+
+
+def create_brudcrumbs(path, project_id=False):
     sliced = path.split('media_root/projects/')
     fullurl = settings.PROJECT_ROOT
-    sliced = sliced[1].split('/')
-    newarray = []
-    for slic in sliced:
-        fullurl = fullurl + '/' + slic
-        newarray.append(fullurl)
+    if len(sliced) == 2:
+        sliced = sliced[1].split('/')
+        newarray = []
+        for slic in sliced:
+            fullurl = fullurl + '/' + slic
+            newarray.append(fullurl)
+    else:
+        newarray = []
     return newarray
 
 

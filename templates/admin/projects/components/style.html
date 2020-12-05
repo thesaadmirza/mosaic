@@ -1,0 +1,25 @@
+{% load static %}
+<style>
+    #folder-icon, #file-icon {
+        height: 55px;
+        width: 55px;
+    }
+
+    #caret-down {
+        height: 15px;
+    }
+
+    .layout-spacing #folder-open :hover {
+        color: blue;
+    }
+
+    #folders-section .dropdown-menu {
+        min-width: 5rem !important;
+    }
+
+</style>
+<link href="{% static 'assets/css/elements/breadcrumb.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'plugins/sweetalerts/sweetalert.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'plugins/notification/snackbar/snackbar.min.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'assets/css/scrollspyNav.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'plugins/file-upload/file-upload-with-preview.min.css' %}" rel="stylesheet" type="text/css"/>

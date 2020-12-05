@@ -1,0 +1,273 @@
+{% load static %}
+<script>
+    $("#add_new_folder").off('click').on('click', function (event) {
+        event.preventDefault();
+        $('#addListModal').modal('show');
+    });
+    $(document).on('click', ".rename", function (event) {
+        event.preventDefault();
+        let path = $(this).parent().parent().next().data('path');
+        let type = $(this).parent().parent().next().data('type');
+        $('#rename_path').val(path);
+        $('#rename_type').val(type);
+        $('#renameModal').modal('show');
+    });
+</script>
+<script>
+    request_url = '/projects/get_filemanager_content_admin/';
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+        url: request_url,
+        data: [{name: 'path', value: $(document).find('ol.breadcrumb').find('li.active').data('path')}],
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        type: 'POST',
+        success: function (data) {
+            $('#filemangaer-section').empty();
+            $('#filemangaer-section').html(data);
+        },
+        errors: function (e) {
+            alert('Whoops, Somthing Happend. Please Refresh the Page.');
+        }
+    })
+
+    function get_filemanager_content() {
+        request_url = '/projects/get_filemanager_content_admin/';
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: request_url,
+            data: [{
+                name: 'path',
+                value: $(document).find('ol.breadcrumb').find('li.active').data('path')
+            }],
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#filemangaer-section').empty();
+                $('#filemangaer-section').html(data);
+            },
+            errors: function (e) {
+                alert('Whoops, Somthing Happend. Please Refresh the Page.');
+            }
+        })
+    }
+</script>
+
+<script src="{% static 'assets/js/scrollspyNav.js' %}"></script>
+<script src="{% static 'plugins/file-upload/file-upload-with-preview.min.js' %}"></script>
+<script src="{% static 'plugins/notification/snackbar/snackbar.min.js' %}"></script>
+<script src="{% static 'plugins/sweetalerts/sweetalert2.min.js' %}"></script>
+<script>
+    //Second upload
+    var secondUpload = new FileUploadWithPreview('mySecondImage')
+</script>
+<script>
+
+    $(document).on('click', '#folder-open', function (event) {
+
+        let path = $(this).attr('data-path');
+        path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+        $(document).find('ol.breadcrumb').find('li.active').removeClass('active');
+        let result = $(document).find('ol.breadcrumb').append('<li class="breadcrumb-item active pl-3" aria-current="page" data-path="' + path + '"><a href="javascript:void(0);"></a></li>');
+        get_filemanager_content();
+    });
+    $(document).on('click', 'ol li.breadcrumb-item', function (event) {
+        let folderName = $(this).attr('data-path');
+        $(this).next().remove();
+        $(this).addClass('active');
+        get_filemanager_content();
+    });
+    $(document).on('click', '#create_folder_submit', function () {
+        let formData = $('#folder_creation_form').serializeArray();
+
+        if (!formData[0].value) {
+            swal({
+                title: 'Whoopx',
+                text: "Please Enter Folder Name",
+                type: 'warning',
+                padding: '2em'
+            })
+
+            return;
+        }
+        formData[formData.length] = {
+            name: 'path',
+            value: $(document).find('ol.breadcrumb').find('li.active').data('path')
+        };
+        request_url = '/projects/create_folder/';
+        $.ajax({
+            url: request_url,
+            data: formData,
+            type: "POST",
+            success: function (data) {
+                if (data.message == "success") {
+                    $('#addListModal').modal('toggle');
+                    get_filemanager_content();
+                    Snackbar.show({
+                        text: 'Successfully Created.',
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                    $('#folder_creation_form')[0].reset();
+                } else {
+                    swal({
+                        title: 'Whoopx',
+                        text: data.data,
+                        type: 'warning',
+                        padding: '2em'
+                    })
+
+                }
+            },
+            error: function (e) {
+
+                Snackbar.show({
+                    text: e.responseJSON.data,
+                    pos: 'top-center',
+                    duration: 3000,
+                });
+            }
+        })
+    })
+    $(document).on('submit', '#files-upload-form', function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        formData.append('path', $(document).find('ol.breadcrumb').find('li.active').data('path'));
+
+        request_url = '/projects/upload_files_manager/';
+        $.ajax({
+            url: request_url,
+            data: formData,
+            crossDomain: true,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+
+            type: "POST",
+            success: function (data) {
+                if (data.message == "success") {
+                    $('#fileUploadModal').modal('toggle');
+                    get_filemanager_content();
+                    Snackbar.show({
+                        text: 'Successfully Uploaded.',
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                    $('.custom-file-container__image-preview').empty();
+                    $('.custom-file-container__custom-file__custom-file-control').html('Choose file...<span class="custom-file-container__custom-file__custom-file-control__button"> Browse </span>');
+                    $('#files-upload-form')[0].reset();
+                } else {
+                    Snackbar.show({
+                        text: 'Whoopx, Somthing Happened.',
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                }
+            },
+            error: function (e) {
+                alert(e.responseJSON.data);
+            }
+        })
+    })
+</script>
+{# Delete or Rename Template Scripts #}
+
+<script>
+    $(document).on('click', '.layout-spacing .dropdown-menu .warning.confirm', function (event) {
+        let path = $(this).parent().parent().next().data('path');
+        let type = $(this).parent().parent().next().data('type');
+
+        path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            padding: '2em'
+        }).then(function (result) {
+            if (result.value) {
+                request_url = '/projects/delete_folder/';
+                $.ajax({
+                    url: request_url,
+                    data: [{
+                        name: 'path', value: path
+                    }, {name: 'type', value: type}]
+                    ,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.message == "success") {
+                            swal(
+                                'Deleted!',
+                                'Your ' + type + ' has been deleted.',
+                                'success'
+                            )
+                            get_filemanager_content();
+                        } else {
+                            swal({
+                                title: 'Whoopx',
+                                text: data.data,
+                                type: 'warning',
+                                padding: '2em'
+                            })
+                        }
+                    },
+                    error: function (e) {
+                        swal(
+                            'Whoopx!',
+                            e.responseJSON.data,
+                            'warning'
+                        )
+                    }
+
+                })
+
+            }
+        })
+    })
+</script>
+{# Rename Folder Ajax Request #}
+<script>
+    $(document).on('submit', '#renameForm', function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        formData.append('fullPath', $(document).find('ol.breadcrumb').find('li.active').data('path'));
+        request_url = '/projects/rename_folder_file/';
+        $.ajax({
+            url: request_url,
+            data: formData,
+            crossDomain: true,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            type: "POST",
+            success: function (data) {
+                if (data.message == "success") {
+                    $('#renameModal').modal('toggle');
+                    get_filemanager_content();
+                    Snackbar.show({
+                        text: 'Successfully Renamed.',
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                    $('#renameForm')[0].reset();
+                } else {
+                    Snackbar.show({
+                        text: 'Whoopx, Somthing Happened.',
+                        pos: 'top-center',
+                        duration: 3000,
+                    });
+                }
+            },
+            error: function (e) {
+                alert(e.responseJSON.data);
+            }
+        })
+    })
+</script>
