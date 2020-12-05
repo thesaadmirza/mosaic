@@ -140,7 +140,7 @@
         });
     </script>
     <script>
-        request_url = '/booking/get_filemanager_content/' +{{ object.id }};
+        request_url = '/projects/get_filemanager_content/' +{{ object.id }};
         var csrftoken = $("[name=csrfmiddlewaretoken]").val();
         $.ajax({
             url: request_url,
@@ -159,7 +159,7 @@
         })
 
         function get_filemanager_content() {
-            request_url = '/booking/get_filemanager_content/' +{{ object.id }};
+            request_url = '/projects/get_filemanager_content/' +{{ object.id }};
             var csrftoken = $("[name=csrfmiddlewaretoken]").val();
             $.ajax({
                 url: request_url,
@@ -217,7 +217,7 @@
                 name: 'path',
                 value: $(document).find('ol.breadcrumb').find('li.active').data('path')
             };
-            request_url = '/booking/create_folder/';
+            request_url = '/projects/create_folder/';
             $.ajax({
                 url: request_url,
                 data: formData,
@@ -251,7 +251,7 @@
             var formData = new FormData(this);
             formData.append('path', $(document).find('ol.breadcrumb').find('li.active').data('path'));
 
-            request_url = '/booking/upload_files_manager/';
+            request_url = '/projects/upload_files_manager/';
             $.ajax({
                 url: request_url,
                 data: formData,

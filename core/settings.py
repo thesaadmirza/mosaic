@@ -24,7 +24,6 @@ USE_TZ = False
 TIME_ZONE = 'Australia/Sydney'
 LANGUAGES = (
     ('en', _('English')),
-    ('zh-CN', _('Chinese')),
 )
 USE_I18N = True
 USE_L10N = True
@@ -87,6 +86,7 @@ INSTALLED_APPS = [
     'customer',
     'staff',
     'booking',
+    'projects',
     # installed Libraries
     'crispy_forms',
     'allauth',
