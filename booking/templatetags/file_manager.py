@@ -1,6 +1,7 @@
 from django import template
 import fsutil
 from django.template.defaultfilters import stringfilter
+from django.core.files.images import get_image_dimensions
 
 register = template.Library()
 
@@ -39,9 +40,20 @@ def is_image(value):
 @stringfilter
 def urlfile(value):
     name = filename(value)
-    if name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
-        splitted = value.split('media_root')
-        newvalue = '/media' + splitted[1]
-    else:
-        newvalue = value
+    splitted = value.split('media_root')
+    newvalue = '/media' + splitted[1]
     return newvalue
+
+
+@register.filter
+@stringfilter
+def getimageHeight(value):
+    height, width = get_image_dimensions(value)
+    return height
+
+
+@register.filter
+@stringfilter
+def getimageWidth(value):
+    height, width = get_image_dimensions(value)
+    return width

@@ -97,15 +97,17 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#">View</a>
+
                     <a class="dropdown-item warning confirm" href="javascript:void(0);">Delete</a>
                     <a class="dropdown-item rename" href="javascript:void(0);">Rename</a>
                 </div>
             </div>
-            <a href="javascript:void(0);" data-type="file" data-path="{{ file|filename }}">
+            <a href="javascript:void(0);" id="file-open"
+               data-file-type="{% if file|is_image %}image{% else %}other{% endif %}" data-type="file"
+               data-path="{{ file|filename }}" data-url="{{ file|urlfile }}">
                 <div class="jumbotron-fluid text-left">
                     {% if file|is_image %}
-                        <img style="height: 50px;" src="{{ file|urlfile }}">
+                        <img style="height: 50px;max-width: 100%;" src="{{ file|urlfile }}">
                     {% else %}
                         <svg viewBox="0 0 24 24" id="file-icon" width="24" height="24" stroke="currentColor"
                              stroke-width="2"
@@ -121,3 +123,18 @@
         </div>
     {% endfor %}
 </div>
+<script>
+    // build items array
+    var items = [
+        {% for file in files %}
+            {% if file|is_image %}
+                {
+                    src: '{{ file|urlfile }}',
+                    w: '{{file|getimageHeight}}',
+                    h: '{{file|getimageWidth}}',
+                },
+            {% endif %}
+        {% endfor %}
+
+    ];
+</script>

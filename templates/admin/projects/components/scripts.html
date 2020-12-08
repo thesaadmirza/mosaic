@@ -60,6 +60,11 @@
 <script src="{% static 'plugins/file-upload/file-upload-with-preview.min.js' %}"></script>
 <script src="{% static 'plugins/notification/snackbar/snackbar.min.js' %}"></script>
 <script src="{% static 'plugins/sweetalerts/sweetalert2.min.js' %}"></script>
+<script src="{% static 'plugins/lightbox/photoswipe.min.js' %}"></script>
+<script src="{% static 'plugins/lightbox/photoswipe-ui-default.min.js' %}"></script>
+<script>
+
+</script>
 <script>
     //Second upload
     var secondUpload = new FileUploadWithPreview('mySecondImage')
@@ -73,6 +78,52 @@
         $(document).find('ol.breadcrumb').find('li.active').removeClass('active');
         let result = $(document).find('ol.breadcrumb').append('<li class="breadcrumb-item active pl-3" aria-current="page" data-path="' + path + '"><a href="javascript:void(0);"></a></li>');
         get_filemanager_content();
+    });
+    $(document).on('click', '#file-open', function (event) {
+
+        let path = $(this).attr('data-path');
+        let file_type = $(this).attr('data-file-type');
+        var clickedAHref = $(this).attr('data-url');
+        path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+        if (file_type == "other") {
+            console.log(clickedAHref);
+            var win = window.open(clickedAHref, '_blank');
+            if (win) {
+                //Browser has allowed it to be opened
+                win.focus();
+            } else {
+                //Browser has blocked it
+                alert('Please allow popups for this website');
+            }
+        } else {
+
+            var matchedIndex = items.map(function (obj) {
+                return obj.src;
+            }).indexOf(clickedAHref);
+            var openPhotoSwipe = function () {
+                var pswpElement = document.querySelectorAll('.pswp')[0];
+
+
+                // define options (if needed)
+                var options = {
+                    // history & focus options are disabled on CodePen
+                    index: matchedIndex,
+                    history: false,
+                    focus: false,
+
+                    showAnimationDuration: 0,
+                    hideAnimationDuration: 0
+
+                };
+
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+                gallery.init();
+            };
+
+            openPhotoSwipe();
+        }
+
+
     });
     $(document).on('click', 'ol li.breadcrumb-item', function (event) {
         let folderName = $(this).attr('data-path');
