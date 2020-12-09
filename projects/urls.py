@@ -13,9 +13,12 @@ urlpatterns = [
     # File Manager URls
     path('create_folder/', views.folder_create, name='folder_create'),
     path('get_filemanager_content/<int:pk>', views.filemanager_content, name="filemanager_content"),
+    path('get_filemanager_content_public/<int:pk>', views.filemanager_content_public,
+         name="filemanager_content_public"),
 
     # admin url
     path('get_filemanager_content_admin/', views.filemanager_content_admin, name="filemanager_content_admin"),
 
     path('upload_files_manager/', views.upload_files, name='upload_files_manager'),
+    path('public_project_view/<int:pk>', views.public_project_view, name='public_project_view'),
 ]

@@ -1,0 +1,158 @@
+{% load static %}
+<script>
+    $("#add_new_folder").off('click').on('click', function (event) {
+        event.preventDefault();
+        $('#addListModal').modal('show');
+    });
+    $(document).on('click', ".rename", function (event) {
+        event.preventDefault();
+        let path = $(this).parent().parent().next().data('path');
+        let type = $(this).parent().parent().next().data('type');
+        $('#rename_path').val(path);
+        $('#rename_type').val(type);
+        $('#renameModal').modal('show');
+    });
+</script>
+<script>
+    request_url = '/projects/get_filemanager_content_public/' +{{ id }};
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+        url: request_url,
+        data: [{name: 'path', value: $(document).find('ol.breadcrumb').find('li.active').data('path')}],
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        type: 'POST',
+        success: function (data) {
+            $('#filemangaer-section').empty();
+            $('#filemangaer-section').html(data);
+        },
+        errors: function (e) {
+            alert('Whoops, Somthing Happend. Please Refresh the Page.');
+        }
+    })
+
+    function get_filemanager_content() {
+        request_url = '/projects/get_filemanager_content_public/' +{{ id }};
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: request_url,
+            data: [{
+                name: 'path',
+                value: $(document).find('ol.breadcrumb').find('li.active').data('path')
+            }],
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#filemangaer-section').empty();
+                $('#filemangaer-section').html(data);
+            },
+            errors: function (e) {
+                alert('Whoops, Somthing Happend. Please Refresh the Page.');
+            }
+        })
+    }
+</script>
+
+<script src="{% static 'assets/js/scrollspyNav.js' %}"></script>
+
+<script src="{% static 'plugins/notification/snackbar/snackbar.min.js' %}"></script>
+<script src="{% static 'plugins/sweetalerts/sweetalert2.min.js' %}"></script>
+<script src="{% static 'plugins/lightbox/photoswipe.min.js' %}"></script>
+<script src="{% static 'plugins/lightbox/photoswipe-ui-default.min.js' %}"></script>
+<script src="{% static 'plugins/blockui/jquery.blockUI.min.js' %}"></script>
+<script>
+
+</script>
+
+<script>
+
+    $(document).on('click', '#folder-open', function (event) {
+
+        let path = $(this).attr('data-path');
+        path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+        $(document).find('ol.breadcrumb').find('li.active').removeClass('active');
+        let result = $(document).find('ol.breadcrumb').append('<li class="breadcrumb-item active pl-3" aria-current="page" data-path="' + path + '"><a href="javascript:void(0);"></a></li>');
+        get_filemanager_content();
+    });
+    $(document).on('click', '#file-open', function (event) {
+
+        let path = $(this).attr('data-path');
+        let file_type = $(this).attr('data-file-type');
+        var clickedAHref = $(this).attr('data-url');
+        path = $(document).find('ol.breadcrumb').find('li.active').data('path') + '/' + path;
+        if (file_type == "other") {
+            console.log(clickedAHref);
+            var win = window.open(clickedAHref, '_blank');
+            if (win) {
+                //Browser has allowed it to be opened
+                win.focus();
+            } else {
+                //Browser has blocked it
+                alert('Please allow popups for this website');
+            }
+        } else {
+
+            var matchedIndex = items.map(function (obj) {
+                return obj.src;
+            }).indexOf(clickedAHref);
+            var openPhotoSwipe = function () {
+                var pswpElement = document.querySelectorAll('.pswp')[0];
+
+
+                // define options (if needed)
+                var options = {
+                    // history & focus options are disabled on CodePen
+                    index: matchedIndex,
+                    history: false,
+                    focus: false,
+
+                    showAnimationDuration: 0,
+                    hideAnimationDuration: 0
+
+                };
+
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+                gallery.init();
+            };
+
+            openPhotoSwipe();
+        }
+
+
+    });
+    $(document).on('click', 'ol li.breadcrumb-item', function (event) {
+        let folderName = $(this).attr('data-path');
+        $(this).next().remove();
+        $(this).addClass('active');
+        get_filemanager_content();
+    });
+
+
+</script>
+{# Delete or Rename Template Scripts #}
+<script>
+    $('#filemangaer-section').bind('ajaxStart', function () {
+        $(this).show();
+    }).bind('ajaxStop', function () {
+        $(this).hide();
+    });
+    var block = $('#filemangaer-section');
+    $(block).block({
+        message: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>',
+
+        overlayCSS: {
+            backgroundColor: '#000',
+            opacity: 0.8,
+            cursor: 'wait'
+        },
+        css: {
+            border: 0,
+            color: '#fff',
+            padding: 0,
+            backgroundColor: 'transparent'
+        }
+    });
+</script>

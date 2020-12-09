@@ -48,6 +48,21 @@ def projectsview(request):
                   {'current_path': current_path, 'dirs': dirs, 'files': files})
 
 
+def public_project_view(request, pk):
+    project_dir = settings.PROJECT_ROOT + '/' + str(pk)
+    current_path = project_dir
+    folders = create_brudcrumbs(project_dir)
+    try:
+        dir_exist = fsutil.assert_exists(project_dir)
+        dirs = fsutil.list_dirs(project_dir)
+        files = fsutil.list_files(project_dir)
+    except Exception as e:
+        dirs = []
+        files = []
+    return render(request, 'admin/projects/public_manager.html',
+                  {'current_path': current_path, 'dirs': dirs, 'files': files, 'id': str(pk)})
+
+
 def testingdir(request, **kwargs):
     dirs = fsutil.list_dirs(settings.PROJECT_ROOT)
     files = fsutil.list_files(settings.PROJECT_ROOT)
@@ -128,6 +143,28 @@ def filemanager_content(request, pk):
         dir = []
         files = []
     converted_string = render_to_string('admin/projects/filemanager.html',
+                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
+    return HttpResponse(converted_string)
+
+
+def filemanager_content_public(request, pk):
+    path = request.POST.get('path', False)
+    project = str(pk)
+    if path:
+        current_path = settings.PROJECT_ROOT + '/' + project
+        folders = create_brudcrumbs(path, project)
+        try:
+            dir_exist = fsutil.assert_exists(path)
+            dir = fsutil.list_dirs(path)
+            files = fsutil.list_files(path)
+        except Exception as e:
+            dir = []
+            files = []
+    else:
+        current_path = path
+        dir = []
+        files = []
+    converted_string = render_to_string('admin/projects/public/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
     return HttpResponse(converted_string)
 

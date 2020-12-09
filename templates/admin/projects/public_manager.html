@@ -1,0 +1,32 @@
+{% extends 'public_base.html' %}
+{% load i18n %}
+{% load static %}
+{% load file_manager %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+
+{% block page_css %}
+
+    {% include 'admin/projects/components/style.html' %}
+{% endblock %}
+
+
+
+<!-- Important for page rendering -->
+{% block page_class %}sidebar-noneoverflow{% endblock %}
+{% block page_title %}{{ object.id }}Projects{% endblock %}
+{% block page_title_heading %}{{ object.id }} Projects{% endblock %}
+<!-- ends here important tile and class -->
+
+
+<!-- Start Adding Content From Here -->
+{% block content %}
+    {% include 'admin/projects/public/manager_main.html' %}
+{% endblock %}
+<!-- Main Content -->
+
+
+
+{% block page_js %}
+    {% include 'admin/projects/public/scripts.html' %}
+{% endblock %}
