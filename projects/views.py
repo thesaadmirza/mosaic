@@ -59,8 +59,9 @@ def public_project_view(request, pk):
     except Exception as e:
         dirs = []
         files = []
+    project_full = Booking.objects.filter(id=pk).first()
     return render(request, 'admin/projects/public_manager.html',
-                  {'current_path': current_path, 'dirs': dirs, 'files': files, 'id': str(pk)})
+                  {'current_path': current_path, 'dirs': dirs, 'files': files, 'id': str(pk), 'project': project_full})
 
 
 def testingdir(request, **kwargs):
@@ -149,6 +150,7 @@ def filemanager_content(request, pk):
 
 def filemanager_content_public(request, pk):
     path = request.POST.get('path', False)
+
     project = str(pk)
     if path:
         current_path = settings.PROJECT_ROOT + '/' + project
@@ -164,8 +166,11 @@ def filemanager_content_public(request, pk):
         current_path = path
         dir = []
         files = []
+    project_full = Booking.objects.filter(id=pk).first()
+
     converted_string = render_to_string('admin/projects/public/filemanager.html',
-                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
+                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
+                                         'project': project_full})
     return HttpResponse(converted_string)
 
 
