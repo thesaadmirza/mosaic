@@ -158,3 +158,59 @@
     });
 
 </script>
+<script>
+    $(document).on('click', '#select_all', function () {
+        $('input:checkbox[name="download_zip_folder[]"]').prop('checked', this.checked);
+        $('input:checkbox[name="download_zip_file[]"]').prop('checked', this.checked);
+    });
+</script>
+<script>
+    $(document).on('click', '#download', function (event) {
+        let selected_boxs_folder = $(document).find('#filemangaer-section input:checkbox[name="download_zip_folder"]:checked');
+        let selected_boxs_file = $(document).find('#filemangaer-section input:checkbox[name="download_zip_file"]:checked');
+        if (selected_boxs_folder.length > 0 || selected_boxs_file.length > 0) {
+
+
+            let folders = []
+            selected_boxs_folder.each(function () {
+                folders.push($(this).val());
+            });
+            let files = []
+            selected_boxs_file.each(function () {
+                files.push($(this).val());
+            });
+            let formData = {
+                'path': $(document).find('ol.breadcrumb').find('li.active').data('path'),
+                'files': files,
+                'folders': folders,
+            }
+            console.log(folders, formData, JSON.stringify(formData));
+            request_url = '/projects/download_zip_file/';
+            $.ajax({
+                url: request_url,
+                data: JSON.stringify(formData),
+                crossDomain: true,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                type: "POST",
+                error: function (response) {
+                    window.location = response;
+                },
+                success: function (response) {
+                    window.location = response;
+                }
+            })
+        } else {
+            swal({
+                title: 'Whoopx',
+                text: 'Please Select Atleast One Checkbox to Download',
+                type: 'warning',
+                padding: '2em'
+            })
+        }
+    });
+</script>

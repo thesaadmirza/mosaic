@@ -21,4 +21,6 @@ urlpatterns = [
 
     path('upload_files_manager/', views.upload_files, name='upload_files_manager'),
     path('public_project_view/<int:pk>', views.public_project_view, name='public_project_view'),
+    path('download_zip_file/', views.download_zip, name='download_zip_file'),
+    path('download_file/', views.download_zip_file, name='download_file'),
 ]

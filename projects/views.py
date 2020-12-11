@@ -5,10 +5,15 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from booking.models import Booking
-from django.contrib.auth.decorators import login_required
+
+from django.http import HttpResponse
 from django.views.generic import DetailView
+from zipfile import ZipFile
 import fsutil
 import os
+import json
+from io import BytesIO
+import zipfile
 
 
 # Create your views here.
@@ -170,7 +175,7 @@ def filemanager_content_public(request, pk):
 
     converted_string = render_to_string('admin/projects/public/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
-                                         'project': project_full})
+                                         'project': project_full}, request=request)
     return HttpResponse(converted_string)
 
 
@@ -235,3 +240,76 @@ def upload_files(request):
     path = request.POST.get('path', False)
     result = handle_uploads(request, path)
     return JsonResponse({'message': 'success', 'data': 'Successfully Updated.'}, status=200)
+
+
+def zipFilesInDir(dirName):
+    folders_content = []
+    for folderName, subfolders, filenames in os.walk(dirName):
+        for filename in filenames:
+            if filter(filename):
+                # create complete filepath of file in directory
+                filePath = os.path.join(folderName, filename)
+                folders_content.append(filePath)
+
+    return folders_content
+
+
+def zipdir(path, ziph, project):
+    # ziph is zipfile handle
+    project = str(project)
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            arcpath = root.split(project)
+            ziph.write(os.path.join(root, file), arcpath[1] + '/' + file)
+
+
+def download_zip(request):
+    path = request.POST.get('path', False)
+    project = request.POST.get('project', False)
+    if not project:
+        return False
+    folders = request.POST.getlist('download_zip_folder[]', False)
+    files = request.POST.getlist('download_zip_file[]', False)
+    byte_data = BytesIO()
+    if path:
+        if files or folders:
+            zip_file = zipfile.ZipFile(byte_data, "w")
+            if files:
+                for file in files:
+                    zip_file.write(path + '/' + file, '/' + file)
+
+            if folders:
+                for folder in folders:
+                    folder = path + '/' + folder
+                    zipdir(folder, zip_file, project)
+
+            zip_file.close()
+
+            response = HttpResponse(byte_data.getvalue(), content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename=files.zip'
+
+            # Print list files in zip_file
+            zip_file.printdir()
+            return response
+
+
+def download_zip_file(request):
+    filelist = ["/Users/saadmirza/apps/fiverr/mosaic/mosaic/media_root/projects/31/screenshot.png",
+                "/Users/saadmirza/apps/fiverr/mosaic/mosaic/media_root/projects/31/screenshot1.png",
+                "/Users/saadmirza/apps/fiverr/mosaic/mosaic/media_root/projects/31/screenshot3.png"]
+
+    byte_data = BytesIO()
+    zip_file = zipfile.ZipFile(byte_data, "w")
+
+    for file in filelist:
+        filename = os.path.basename(os.path.normpath(file))
+        zip_file.write(file, filename)
+    zip_file.close()
+
+    response = HttpResponse(byte_data.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=files.zip'
+
+    # Print list files in zip_file
+    zip_file.printdir()
+
+    return response
