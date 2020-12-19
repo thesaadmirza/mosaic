@@ -1,6 +1,6 @@
 {% load file_manager %}
-<form method="POST" action="{% url 'projects:download_zip_file' %}">
-    <input type="hidden" value="{{ current_path }}" name="path">
+<form method="POST" action="{% url 'projects:download_zip_file' %}" class="col-md-12">
+    <input type="hidden" value="{% if folders %}{{ folders|last }}{% else %}{{ current_path }}{% endif %}" name="path">
     <input type="hidden" value="{{ project.id }}" name="project">
     {% csrf_token %}
     <div class="col-md-12 row">
@@ -31,7 +31,7 @@
                 <label class="new-control new-checkbox checkbox-dark" style="height: 18px;">
                     <input type="checkbox" class="new-control-input" id="select_all">
                     <span class="new-control-indicator"></span>
-                    Select All
+                    SELECT ALL
                 </label>
             </div>
         </div>

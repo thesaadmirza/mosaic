@@ -14,7 +14,7 @@
     });
 </script>
 <script>
-    request_url = '/projects/get_filemanager_content_public/' +{{ id }};
+    request_url = "/projects/get_filemanager_content_public/" + "{{ id }}";
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
     $.ajax({
         url: request_url,
@@ -33,7 +33,7 @@
     })
 
     function get_filemanager_content() {
-        request_url = '/projects/get_filemanager_content_public/' +{{ id }};
+        request_url = "/projects/get_filemanager_content_public/" + "{{ id }}";
         var csrftoken = $("[name=csrfmiddlewaretoken]").val();
         $.ajax({
             url: request_url,

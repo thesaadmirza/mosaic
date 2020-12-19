@@ -11,7 +11,7 @@ from django.views.generic import DetailView
 from zipfile import ZipFile
 import fsutil
 import os
-import json
+from django.core.signing import TimestampSigner
 from io import BytesIO
 import zipfile
 
@@ -24,6 +24,8 @@ class BookingView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(BookingView, self).get_context_data(**kwargs)
         project_dir = settings.PROJECT_ROOT + '/' + str(self.object.id)
+        signer = TimestampSigner()
+        context['id'] = signer.sign(str(self.object.id))
         context['current_path'] = project_dir
         context['folders'] = create_brudcrumbs(project_dir, str(self.object.id))
         try:
@@ -65,6 +67,30 @@ def public_project_view(request, pk):
         dirs = []
         files = []
     project_full = Booking.objects.filter(id=pk).first()
+    return render(request, 'admin/projects/public_manager.html',
+                  {'current_path': current_path, 'dirs': dirs, 'files': files, 'id': str(pk), 'project': project_full})
+
+
+def public_project_signed(request, pk):
+    signer = TimestampSigner()
+    try:
+        encrypted = signer.unsign(str(pk))
+    except Exception as e:
+        return HttpResponse("Sorry, you are not allowed to perform this operation.")
+    project_full = Booking.objects.filter(id=encrypted).first()
+    if not project_full:
+        return HttpResponse("Sorry, you are not allowed to perform this operation.")
+    project_dir = settings.PROJECT_ROOT + '/' + encrypted
+    current_path = project_dir
+    folders = create_brudcrumbs(project_dir)
+    try:
+        dir_exist = fsutil.assert_exists(project_dir)
+        dirs = fsutil.list_dirs(project_dir)
+        files = fsutil.list_files(project_dir)
+    except Exception as e:
+        dirs = []
+        files = []
+
     return render(request, 'admin/projects/public_manager.html',
                   {'current_path': current_path, 'dirs': dirs, 'files': files, 'id': str(pk), 'project': project_full})
 
@@ -148,15 +174,30 @@ def filemanager_content(request, pk):
         current_path = path
         dir = []
         files = []
+
+    project_full = Booking.objects.filter(id=pk).first()
+    if (not project_full):
+        return HttpResponse("Sorry, You are not allowed to perform this operation")
+    signer = TimestampSigner()
+    encrypted = signer.sign(str(project_full.id))
+
     converted_string = render_to_string('admin/projects/filemanager.html',
-                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
+                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
+                                         'encrypted': encrypted})
     return HttpResponse(converted_string)
 
 
 def filemanager_content_public(request, pk):
     path = request.POST.get('path', False)
-
-    project = str(pk)
+    signer = TimestampSigner()
+    try:
+        project = signer.unsign(str(pk))
+    except Exception as e:
+        return HttpResponse("Sorry, you are not allowed to perform this operation.")
+    project_full = Booking.objects.filter(id=project).first()
+    if not project_full:
+        return HttpResponse("Sorry, you are not allowed to perform this operation.")
+    folders = []
     if path:
         current_path = settings.PROJECT_ROOT + '/' + project
         folders = create_brudcrumbs(path, project)
@@ -171,7 +212,8 @@ def filemanager_content_public(request, pk):
         current_path = path
         dir = []
         files = []
-    project_full = Booking.objects.filter(id=pk).first()
+
+
 
     converted_string = render_to_string('admin/projects/public/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,

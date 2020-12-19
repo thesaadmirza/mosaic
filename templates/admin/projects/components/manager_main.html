@@ -90,6 +90,45 @@
     </div>
 </div>
 <!-- Modal to create new folder ends here -->
+<!-- Modal to Copy Linnk  in Current Directory -->
+{% if id %}
+<div class="modal fade" id="copyLinkModal" tabindex="-1" role="dialog" aria-labelledby="copyLinkModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="copylink">Public Link for Project</h5>
+            </div>
+
+                <div class="modal-body">
+                    <div class="compose-box">
+                        <div class="compose-content" id="renameModalTitle">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="list-title">
+                                        <input id="copy-link-input" required type="text"
+                                               placeholder="New Name"
+                                               value="{{ request.scheme }}://{{ request.get_host }}{% url 'projects:public_project_signed' id %}"
+                                               class="form-control">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                    <button  class="btn btn-primary" onclick="copy_link()" id="copy_linked">Copy</button>
+                </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- Modal to create new folder ends here -->
 <!-- Modal to Creat new Folder in Current Directory -->
 <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalLabel"
      aria-hidden="true">
