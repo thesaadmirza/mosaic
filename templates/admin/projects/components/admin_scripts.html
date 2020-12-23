@@ -199,9 +199,11 @@
             xhr: function () {
                 $('#upload-btn-files').prop('disabled', true);
                 var xhr = $.ajaxSettings.xhr();
+                
                 if (xhr.upload) {
                     $('.progress').removeClass('d-none');
                     xhr.upload.addEventListener('progress', function (event) {
+                        console.log(event, event.position)
                         var percent = 0;
                         var position = event.loaded || event.position;
                         var total = event.total;
