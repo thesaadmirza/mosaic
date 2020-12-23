@@ -33,7 +33,8 @@
             </svg>
         </button>
         {% if encrypted %}
-            <button class="btn btn-outline-info float-right mr-2" data-target="#copyLinkModal" data-toggle="modal" data-link-encrypted="{{ encrypted }}">
+            <button class="btn btn-outline-info float-right mr-2" data-target="#copyLinkModal" data-toggle="modal"
+                    data-link-encrypted="{{ encrypted }}">
                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
                      fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
                     <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
@@ -61,12 +62,12 @@
                         <circle cx="12" cy="19" r="1"></circle>
                     </svg>
                 </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item warning confirm" href="javascript:void(0);">Delete</a>
-                    <a class="dropdown-item rename" href="javascript:void(0);">Rename</a>
-
-                </div>
+                {% if allowed %}
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item warning confirm" href="javascript:void(0);">Delete</a>
+                        <a class="dropdown-item rename" href="javascript:void(0);">Rename</a>
+                    </div>
+                {% endif %}
             </div>
             <a id="folder-open" class="float-left" href="javascript:void(0);" data-path="{{ folder|foldername }}"
                data-type="folder">
@@ -141,13 +142,13 @@
     ];
 </script>
 {% if id %}
-<div class="modal fade" id="copyLinkModal" tabindex="-1" role="dialog" aria-labelledby="copyLinkModal"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="copylink">Public Link for Project</h5>
-            </div>
+    <div class="modal fade" id="copyLinkModal" tabindex="-1" role="dialog" aria-labelledby="copyLinkModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="copylink">Public Link for Project</h5>
+                </div>
 
                 <div class="modal-body">
                     <div class="compose-box">
@@ -170,10 +171,10 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-                    <button  class="btn btn-primary" onclick="copy_link()" id="copy_linked">Copy</button>
+                    <button class="btn btn-primary" onclick="copy_link()" id="copy_linked">Copy</button>
                 </div>
 
+            </div>
         </div>
     </div>
-</div>
 {% endif %}

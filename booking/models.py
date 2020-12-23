@@ -71,6 +71,7 @@ class Booking(models.Model):
     job_reference = models.CharField(_("Client Job reference"), max_length=100, blank=True, null=True)
     notes = models.TextField(_("Notes"), blank=True, null=True)
     private_notes = models.TextField(_("Private Notes"), null=True, blank=True)
+    project_folder = models.TextField(_("Project Folder Name"), null=True, blank=True)
 
     def __str__(self):
         return str(self.pk)

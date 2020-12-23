@@ -20,7 +20,7 @@ from utils.credentials import get_calendar_service
 import datetime
 import googlemaps
 from users.models import Staff
-
+import fsutil
 
 gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
@@ -105,9 +105,6 @@ class BookingDelete(LoginRequiredMixin, DeleteView):
     model = Booking
     template_name = 'admin/bookings/delete.html'
     success_url = reverse_lazy('booking:list')
-
-
-
 
 
 def booking_events_json(request):
@@ -241,7 +238,10 @@ def store_booking(request):
         savedB.save()
         description = 'Address : ' + savedB.address.full_addreess + '<br>' + 'Customer : ' + customer.company_name + '<br>' + 'Staff : ' + staff.name
         try:
-            dir_project = settings.PROJECT_ROOT + '/' + str(savedB.id)
+            foldername = str(savedB.id) + ' - ' + savedB.address.full_addreess
+            dir_project = settings.PROJECT_ROOT + '/' + foldername
+            savedB.project_folder = foldername
+            savedB.save()
             not_exist = fsutil.assert_not_dir(dir_project)
             if not_exist:
                 fsutil.delete_dir(dir_project)
@@ -415,6 +415,3 @@ def timeCalendar_json(request):
     converted_string = render_to_string('admin/bookings/render_calendar.html',
                                         {'days': newdays, 'today': date, 'previous': previous, 'next': next})
     return HttpResponse(converted_string)
-
-
-

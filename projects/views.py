@@ -23,11 +23,11 @@ class BookingView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(BookingView, self).get_context_data(**kwargs)
-        project_dir = settings.PROJECT_ROOT + '/' + str(self.object.id)
+        project_dir = settings.PROJECT_ROOT + '/' + str(self.object.project_folder)
         signer = TimestampSigner()
         context['id'] = signer.sign(str(self.object.id))
         context['current_path'] = project_dir
-        context['folders'] = create_brudcrumbs(project_dir, str(self.object.id))
+        context['folders'] = create_brudcrumbs(project_dir, self.object.project_folder)
         try:
             dir_exist = fsutil.assert_exists(project_dir)
             context['dirs'] = fsutil.list_dirs(project_dir)
@@ -80,7 +80,7 @@ def public_project_signed(request, pk):
     project_full = Booking.objects.filter(id=encrypted).first()
     if not project_full:
         return HttpResponse("Sorry, you are not allowed to perform this operation.")
-    project_dir = settings.PROJECT_ROOT + '/' + encrypted
+    project_dir = settings.PROJECT_ROOT + '/' + project_full.project_folder
     current_path = project_dir
     folders = create_brudcrumbs(project_dir)
     try:
@@ -129,6 +129,7 @@ def rename_folder_file(request):
             fulpath = request.POST.get('fullPath', False)
             path = fulpath + '/' + path
             type = request.POST.get('type', False)
+
             if type == "folder":
                 fsutil.rename_dir(path, name)
             else:
@@ -160,9 +161,12 @@ def delete_folder(request):
 def filemanager_content(request, pk):
     path = request.POST.get('path', False)
     project = str(pk)
+    project_full = Booking.objects.filter(id=pk).first()
+    if (not project_full):
+        return HttpResponse("Sorry, You are not allowed to perform this operation")
     if path:
-        current_path = settings.PROJECT_ROOT + '/' + project
-        folders = create_brudcrumbs(path, project)
+        current_path = settings.PROJECT_ROOT + '/' + project_full.project_folder
+        folders = create_brudcrumbs(path, project_full.project_folder)
         try:
             dir_exist = fsutil.assert_exists(path)
             dir = fsutil.list_dirs(path)
@@ -175,12 +179,8 @@ def filemanager_content(request, pk):
         dir = []
         files = []
 
-    project_full = Booking.objects.filter(id=pk).first()
-    if (not project_full):
-        return HttpResponse("Sorry, You are not allowed to perform this operation")
     signer = TimestampSigner()
     encrypted = signer.sign(str(project_full.id))
-
     converted_string = render_to_string('admin/projects/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
                                          'encrypted': encrypted})
@@ -223,6 +223,7 @@ def filemanager_content_admin(request):
     path = request.POST.get('path', False)
     encrypted = False
     id = False
+    allowed = True
     if path:
         current_path = settings.PROJECT_ROOT
         sliced = path.split('media_root/projects/')
@@ -231,12 +232,14 @@ def filemanager_content_admin(request):
             sliced = sliced[1].split('/')
             if len(sliced) >= 1:
                 projecturl = sliced[0]
-                project_full = Booking.objects.filter(id=projecturl).first()
+                project_full = Booking.objects.filter(project_folder=projecturl).first()
                 if (not project_full):
                     return HttpResponse("Sorry, You are not allowed to perform this operation")
                 signer = TimestampSigner()
                 encrypted = signer.sign(str(project_full.id))
                 id = encrypted
+        else:
+            allowed = False
         folders = create_brudcrumbs(path)
         try:
             dir_exist = fsutil.assert_exists(path)
@@ -252,7 +255,8 @@ def filemanager_content_admin(request):
     site_address = settings.SITE_ADDRESS
     converted_string = render_to_string('admin/projects/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
-                                         'encrypted': encrypted, 'id': id, 'site_address':site_address})
+                                         'encrypted': encrypted, 'id': id, 'site_address': site_address,
+                                         'allowed': allowed})
     return HttpResponse(converted_string)
 
 
