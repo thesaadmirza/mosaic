@@ -47,19 +47,18 @@
 </div>
 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing row mt-2" id="folders-section">
     {% for folder in dirs %}
-        <div class="col-md-2 mb-3" style="height: 100px;">
-            <div class="float-right dropdown">
+        <div class="col-md-2 mb-3 p-2">
+            <div class=" dropdown">
 
                 <a class=" dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
 
-                    <svg viewBox="0 0 24 24" id="caret-down" width="24" height="24" stroke="currentColor"
-                         stroke-width="2" fill="none"
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                          stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
                         <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="12" cy="5" r="1"></circle>
-                        <circle cx="12" cy="19" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
                     </svg>
                 </a>
                 {% if allowed %}
@@ -69,33 +68,37 @@
                     </div>
                 {% endif %}
             </div>
-            <a id="folder-open" class="float-left" href="javascript:void(0);" data-path="{{ folder|foldername }}"
-               data-type="folder">
-                <div class="jumbotron-fluid text-left ">
-                    <svg id="folder-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
-                         stroke-width="2"
-                         fill="none"
-                         stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <p class="pl-2">{{ folder|foldername }}</p>
+            <a id="folder-open" class="text-center " href="javascript:void(0);" data-path="{{ folder|foldername }}"
+               data-type="folder" >
+                <div class="card component-card_1 ">
+                    <div class="card-body ">
+                        <div class="icon-svg">
+                            <svg id="folder-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                                 stroke-width="2"
+                                 fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+
+                        <p class="card-text">{{ folder|foldername }}</p>
+                    </div>
                 </div>
             </a>
         </div>
     {% endfor %}
     {% for file in files %}
-        <div class="col-md-2 mb-3" style="height: 100px;">
-            <div class="float-right dropdown">
+        <div class="col-md-3 mb-3 p-2">
+            <div class=" dropdown">
 
                 <a class=" dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-                    <svg viewBox="0 0 24 24" id="caret-down" width="24" height="24" stroke="currentColor"
-                         stroke-width="2" fill="none"
+                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                          stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
                         <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="12" cy="5" r="1"></circle>
-                        <circle cx="12" cy="19" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
                     </svg>
                 </a>
 
@@ -105,22 +108,36 @@
                     <a class="dropdown-item rename" href="javascript:void(0);">Rename</a>
                 </div>
             </div>
-            <a href="javascript:void(0);" id="file-open"
+            <a href="javascript:void(0);" id="file-open" class="text-center"
                data-file-type="{% if file|is_image %}image{% else %}other{% endif %}" data-type="file"
                data-path="{{ file|filename }}" data-url="{{ file|urlfile }}">
                 <div class="jumbotron-fluid text-left">
                     {% if file|is_image %}
-                        <img style="height: 50px;max-width: 100%;" src="{{ file|urlfile }}">
+                        <div class="card component-card_2">
+                            <img src="{{ file|urlfile }}" class="card-img-top" alt="widget-card-2">
+                            <div class="card-body">
+                                <p class="card-text">{{ file|filename }}</p>
+
+                            </div>
+                        </div>
                     {% else %}
-                        <svg viewBox="0 0 24 24" id="file-icon" width="24" height="24" stroke="currentColor"
-                             stroke-width="2"
-                             fill="none"
-                             stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                            <polyline points="13 2 13 9 20 9"></polyline>
-                        </svg>
+                        <div class="card component-card_1">
+                            <div class="card-body">
+                                <div class="icon-svg">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                                         stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                         class="css-i6dzq1">
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                        <circle cx="19" cy="12" r="1"></circle>
+                                        <circle cx="5" cy="12" r="1"></circle>
+                                    </svg>
+                                </div>
+
+                                <p class="card-text">{{ file|filename }}</p>
+                            </div>
+                        </div>
                     {% endif %}
-                    <p class="pl-2">{{ file|filename }}</p>
+
                 </div>
             </a>
         </div>

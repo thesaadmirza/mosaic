@@ -82,7 +82,7 @@ def public_project_signed(request, pk):
         return HttpResponse("Sorry, you are not allowed to perform this operation.")
     project_dir = settings.PROJECT_ROOT + '/' + project_full.project_folder
     current_path = project_dir
-    folders = create_brudcrumbs(project_dir)
+    folders = create_brudcrumbs(project_dir, project_full.project_folder)
     try:
         dir_exist = fsutil.assert_exists(project_dir)
         dirs = fsutil.list_dirs(project_dir)
@@ -199,8 +199,8 @@ def filemanager_content_public(request, pk):
         return HttpResponse("Sorry, you are not allowed to perform this operation.")
     folders = []
     if path:
-        current_path = settings.PROJECT_ROOT + '/' + project
-        folders = create_brudcrumbs(path, project)
+        current_path = settings.PROJECT_ROOT + '/' + project_full.project_folder
+        folders = create_brudcrumbs(path, project_full.project_folder)
         try:
             dir_exist = fsutil.assert_exists(path)
             dir = fsutil.list_dirs(path)
