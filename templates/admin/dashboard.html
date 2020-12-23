@@ -39,7 +39,7 @@
                 </div>
                 <div class="w-content">
                     <div class="">
-                        <p class="task-left">{{ loansCount }}</p>
+                        <p class="task-left">{{ customers }}</p>
                     </div>
                 </div>
             </div>
@@ -51,13 +51,13 @@
 
                 <div class="header">
                     <div class="header-body">
-                        <h6 style="color: white;" class="text-center">{% trans 'Campaigns' %}</h6>
+                        <h6 style="color: white;" class="text-center">{% trans 'Projects' %}</h6>
                     </div>
 
                 </div>
                 <div class="w-content">
                     <div class="">
-                        <p class="task-left">{{ overdueCount }}</p>
+                        <p class="task-left">{{ projects }}</p>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
 
                             <div class="w-summary-info">
                                 <h6 class="text-uppercase">{% trans 'Customers' %}</h6>
-                                <p class="summary-count">DKK92,600</p>
+                                <p class="summary-count">{{ customers }}</p>
                             </div>
 
                             <div class="w-summary-stats">
@@ -113,7 +113,7 @@
 
                             <div class="w-summary-info">
                                 <h6 class="text-uppercase">{% trans 'Bookings' %}</h6>
-                                <p class="summary-count">DKK37,515</p>
+                                <p class="summary-count">{{ projects }}</p>
                             </div>
 
                             <div class="w-summary-stats">
@@ -140,7 +140,7 @@
 
                             <div class="w-summary-info">
                                 <h6 class="text-uppercase">{% trans 'Profits' %}</h6>
-                                <p class="summary-count">DKK55,085</p>
+                                <p class="summary-count">${{ profit.service__price__sum}}</p>
                             </div>
 
                             <div class="w-summary-stats">

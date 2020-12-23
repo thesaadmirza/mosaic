@@ -3,10 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import User, Customer
+from booking.models import Booking
 from users.forms import UserForm, CustomerForm
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.db.models import Sum
 
 import random
 import string
@@ -14,7 +16,15 @@ import string
 
 @login_required
 def index(request):
-    return render(request, 'admin/dashboard.html', {})
+    customers = Customer.objects.count()
+    projects = Booking.objects.count()
+    profit = Booking.objects.aggregate(Sum('service__price'))
+    context = {
+        'customers': customers,
+        'projects': projects,
+        'profit': profit,
+    }
+    return render(request, 'admin/dashboard.html', context)
 
 
 # Create your views here.
