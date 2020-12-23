@@ -105,7 +105,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-"django.contrib.sites.middleware.CurrentSiteMiddleware",
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
 ]
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'main', 'locale'),)
@@ -170,6 +170,8 @@ AUTHENTICATION_BACKENDS = (
 
 )
 GOOGLE_MAPS_API_KEY = 'AIzaSyADoLaI3Jlc2wVT-ISO-owBJvl3CSEjkCU'
+ACCOUNT_SESSION_REMEMBER = True
+SESSION_COOKIE_AGE = 10999900
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -230,5 +232,3 @@ MEDIA_URL = '/media/'
 
 GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
-
-
