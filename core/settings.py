@@ -17,7 +17,7 @@ from django.conf import global_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SITE_ADDRESS = 'http://localhost:8000/'  # the url prefix of the site
+SITE_ADDRESS = 'https://saadtesting.herokuapp.com'  # the url prefix of the site
 BRAND_NAME = 'MOSAIC'
 SITE_ID = 1
 MIN_BOOKING_TIME = 12  # hours

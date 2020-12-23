@@ -213,8 +213,6 @@ def filemanager_content_public(request, pk):
         dir = []
         files = []
 
-
-
     converted_string = render_to_string('admin/projects/public/filemanager.html',
                                         {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
                                          'project': project_full}, request=request)
@@ -223,8 +221,22 @@ def filemanager_content_public(request, pk):
 
 def filemanager_content_admin(request):
     path = request.POST.get('path', False)
+    encrypted = False
+    id = False
     if path:
         current_path = settings.PROJECT_ROOT
+        sliced = path.split('media_root/projects/')
+        fullurl = settings.PROJECT_ROOT
+        if len(sliced) == 2:
+            sliced = sliced[1].split('/')
+            if len(sliced) >= 1:
+                projecturl = sliced[0]
+                project_full = Booking.objects.filter(id=projecturl).first()
+                if (not project_full):
+                    return HttpResponse("Sorry, You are not allowed to perform this operation")
+                signer = TimestampSigner()
+                encrypted = signer.sign(str(project_full.id))
+                id = encrypted
         folders = create_brudcrumbs(path)
         try:
             dir_exist = fsutil.assert_exists(path)
@@ -237,8 +249,10 @@ def filemanager_content_admin(request):
         current_path = path
         dir = []
         files = []
+    site_address = settings.SITE_ADDRESS
     converted_string = render_to_string('admin/projects/filemanager.html',
-                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders})
+                                        {'dirs': dir, 'files': files, 'current_path': current_path, 'folders': folders,
+                                         'encrypted': encrypted, 'id': id, 'site_address':site_address})
     return HttpResponse(converted_string)
 
 
