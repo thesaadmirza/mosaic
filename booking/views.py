@@ -56,7 +56,16 @@ class BookingListView(LoginRequiredMixin, ListView):
     template_name = 'admin/bookings/list.html'
 
     def get_queryset(self):
-        return Booking.objects.reverse().all()
+        if self.request.user.is_superuser:
+            booking = Booking.objects.reverse().all()
+        else:
+            if self.request.user.type == "C":
+                customer = Customer.objects.filter(user=self.request.user).first()
+                booking = Booking.objects.filter(customer=customer).all()
+            if self.request.user.type == "S":
+                staff = Staff.objects.filter(user=self.request.user).first()
+                booking = Booking.objects.filter(staff=staff).all()
+        return booking
 
 
 class BookingCreateView(LoginRequiredMixin, CreateView, FormView):

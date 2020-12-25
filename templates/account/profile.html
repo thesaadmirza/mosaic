@@ -28,7 +28,7 @@
                         {% else %}{% if object.type %}{{ object.get_type_display }}
                         {% endif %}{% endif %}</h1>
                     <div class="widget-content widget-content-area br-6">
-                        <form method="POST" action="{% url 'services:update' object.id %}">
+                        <form method="POST" action="{% url 'customer:update' object.id %}">
                             {% if redirect_field_value %}
                                 <input type="hidden" name="{{ redirect_field_name }}"
                                        value="{{ redirect_field_value }}"/>

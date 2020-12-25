@@ -61,7 +61,7 @@ class CustomerView(LoginRequiredMixin, DetailView):
 class CustomersUpdate(LoginRequiredMixin, UpdateView):
     model = Customer
     form_class = CustomerFormE
-    success_url = reverse_lazy('customers:list')
+    success_url = reverse_lazy('customer:index')
     template_name = 'admin/customers/update.html'
 
 class CustomerDelete(LoginRequiredMixin, DeleteView):
