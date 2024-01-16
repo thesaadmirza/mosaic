@@ -169,15 +169,15 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 
 )
-GOOGLE_MAPS_API_KEY = 'AIzaSyADoLaI3Jlc2wVT-ISO-owBJvl3CSEjkCU'
+GOOGLE_MAPS_API_KEY = ''
 ACCOUNT_SESSION_REMEMBER = True
 SESSION_COOKIE_AGE = 10999900
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '340264182095-suaod6bbg4q7ara77ih7inovkr2420bv.apps.googleusercontent.com',
-            'secret': '_p4cAt7lk2qFYCAevjyeuvZJ',
-            'key': 'AIzaSyADoLaI3Jlc2wVT-ISO-owBJvl3CSEjkCU'
+            'client_id': '',
+            'secret': '',
+            'key': ''
         },
         'SCOPE': [
             'profile',
@@ -200,9 +200,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'sarmad1305@gmail.com'
-EMAIL_HOST_PASSWORD = 'hzdxyvyhuueceyon'
-DEFAULT_FROM_EMAIL = 'Mosaic Team <noreply@mosaicmedia.com'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = ''
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
